@@ -11,3 +11,9 @@ build:
 	./Main.exe test.c
 	as -o test.o test.s
 	gcc test.o
+
+testsBackEnd:
+	mkdir -p ./tests/testsBackEnd/results/$(file)/out
+	./Main.exe ./tests/testsBackEnd/$(file).c
+	as -o ./tests/testsBackEnd/results/$(file)/$(file).o ./tests/testsBackEnd/results/$(file)/$(file).s
+	gcc -w ./tests/testsBackEnd/results/$(file)/$(file).o -o ./tests/testsBackEnd/results/$(file)/$(file).out2
