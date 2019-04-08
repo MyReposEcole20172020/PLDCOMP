@@ -11,6 +11,7 @@
 #include "ast-nodes/Program.h"
 #include "ast-nodes/DefVar.h"
 #include "ast-nodes/DeclarVar.h"
+#include "ast-nodes/DeclarArray.h"
 #include "ast-nodes/Param.h"
 #include "ast-nodes/ExecFuncNormal.h"
 #include "ast-nodes/ExprStat.h"
@@ -22,6 +23,8 @@
 #include "ast-nodes/While.h"
 #include "ast-nodes/For.h"
 #include "ast-nodes/GetChar.h"
+#include "ast-nodes/ElemLv.h"
+#include "ast-nodes/ElemRv.h"
 
 using namespace std;
 
@@ -73,8 +76,27 @@ public:
         return e;
     }
 
+    antlrcpp::Any visitElemarray(MainParser::ElemarrayContext *context) override {
+        Expr* e = (Expr*)visit(context->elemrv());
+        return e;
+    }
+
+    antlrcpp::Any visitElemlv(MainParser::ElemlvContext *context) override {
+        string arrayName = context->VAR()->getText();
+        Expr* exp = (Expr*)visit(context->expr());
+        Expr* elemLv = new ElemLv(arrayName,exp);
+        return elemLv;
+    }
+
+    antlrcpp::Any visitElemrv(MainParser::ElemrvContext *context) override {
+        string arrayName = context->VAR()->getText();
+        Expr* exp = (Expr*)visit(context->expr());
+        Expr* elemRv = new ElemRv(arrayName,exp);
+        return elemRv;
+    }
+
     antlrcpp::Any visitConst(MainParser::ConstContext *context) override {
-       int val = (int)stoi(context->INT()->getText());
+        int val = (int)stoi(context->INT()->getText());
         return (Expr*)new ExprInt(val);
     }
 
@@ -161,7 +183,7 @@ public:
     }
 
     antlrcpp::Any visitAddsub(MainParser::AddsubContext *context) override {
-         Expr* temp = nullptr;
+        Expr* temp = nullptr;
         if(context->children[1]->getText() == "+"){
             Expr* op1 = visit(context->expr(0)).as<Expr*>();
             Expr* op2 = visit(context->expr(1)).as<Expr*>();
@@ -199,27 +221,51 @@ public:
     }
 
 	antlrcpp::Any visitAssignement(MainParser::AssignementContext *context) override {
-        string name = context->VAR()->getText();
         Expr* expr = visit(context->expr()).as<Expr*>();
         Expr* assign = nullptr;
-		if(context->children[1]->getText() == "="){
-			assign = new ExprAssign(name,expr);
-		}else if(context->children[1]->getText() == "*="){
-			assign = new ExprMultAssign(name,expr);
-		}else if(context->children[1]->getText() == "/="){
-			assign = new ExprDivAssign(name,expr);
-		}else if(context->children[1]->getText() == "+="){
-			assign = new ExprAddAssign(name,expr);
-		}else if(context->children[1]->getText() == "-="){
-			assign = new ExprSubAssign(name,expr);
-		}else if(context->children[1]->getText() == "%="){
-			assign = new ExprModAssign(name,expr);
-		}else if(context->children[1]->getText() == "&="){
-			assign = new ExprAndBinAssign(name,expr);
-		}else if(context->children[1]->getText() == "^="){
-			assign = new ExprOuExBinAssign(name,expr);
-		}else if(context->children[1]->getText() == "|="){
-			assign = new ExprOuBinAssign(name,expr);
+        if (context->elemlv() == nullptr) {
+            string name = context->VAR()->getText();
+		    if(context->children[1]->getText() == "="){
+			    assign = new ExprAssign(name,expr);
+		    }else if(context->children[1]->getText() == "*="){
+			    assign = new ExprMultAssign(name,expr);
+		    }else if(context->children[1]->getText() == "/="){
+			    assign = new ExprDivAssign(name,expr);
+		    }else if(context->children[1]->getText() == "+="){
+			    assign = new ExprAddAssign(name,expr);
+		    }else if(context->children[1]->getText() == "-="){
+			    assign = new ExprSubAssign(name,expr);
+		    }else if(context->children[1]->getText() == "%="){
+			    assign = new ExprModAssign(name,expr);
+		    }else if(context->children[1]->getText() == "&="){
+			    assign = new ExprAndBinAssign(name,expr);
+		    }else if(context->children[1]->getText() == "^="){
+			    assign = new ExprOuExBinAssign(name,expr);
+		    }else if(context->children[1]->getText() == "|="){
+			    assign = new ExprOuBinAssign(name,expr);
+		    }
+		}
+		else {
+	        Expr* elemlv = visit(context->elemlv()).as<Expr*>();
+		    if(context->children[1]->getText() == "="){
+			    assign = new ExprAssign(elemlv,expr);
+		    }else if(context->children[1]->getText() == "*="){
+			    assign = new ExprMultAssign(elemlv,expr);
+		    }else if(context->children[1]->getText() == "/="){
+			    assign = new ExprDivAssign(elemlv,expr);
+		    }else if(context->children[1]->getText() == "+="){
+			    assign = new ExprAddAssign(elemlv,expr);
+		    }else if(context->children[1]->getText() == "-="){
+			    assign = new ExprSubAssign(elemlv,expr);
+		    }else if(context->children[1]->getText() == "%="){
+			    assign = new ExprModAssign(elemlv,expr);
+		    }else if(context->children[1]->getText() == "&="){
+			    assign = new ExprAndBinAssign(elemlv,expr);
+		    }else if(context->children[1]->getText() == "^="){
+			    assign = new ExprOuExBinAssign(elemlv,expr);
+		    }else if(context->children[1]->getText() == "|="){
+			    assign = new ExprOuBinAssign(elemlv,expr);
+		    }
 		}
         return assign;
     }
@@ -231,6 +277,14 @@ public:
 		Expr* temp = new ExprBinary(op->getValue(),op1,op2);
 		delete op;
 		return temp;
+    }
+    
+    antlrcpp::Any visitDeclararray(MainParser::DeclararrayContext *context) override {
+        cout << "qsd"<< endl;
+        string type = context->TYPE()->getText();
+        cout << "qsd"<< endl;
+        Statement* declarArray = new DeclarArray(context->VAR()->getText(), type, context->INT()->getText());
+        return declarArray;
     }
 
     antlrcpp::Any visitDeclarvar(MainParser::DeclarvarContext *context) override {
@@ -339,6 +393,9 @@ public:
         }
         if(context->declarvar() != nullptr){
             stat = visit(context->declarvar()).as<Statement*>();
+        }
+        if(context->declararray() != nullptr){
+            stat = visit(context->declararray()).as<Statement*>();
         }
 		if(context->ifins() != nullptr){
             stat = visit(context->ifins()).as<Statement*>();

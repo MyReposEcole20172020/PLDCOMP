@@ -89,14 +89,15 @@ void CFG::gen_asm_epilogue(ostream& o) {
 }
 
 // symbol table methods
-void CFG::add_to_symbol_table(string name, Type t) {
+void CFG::add_to_symbol_table(string name, Type t, int tableSize) {
 	SymbolType.insert(make_pair(name,t));
-	if(t.getText() == "int"){
+	if(t.getText() == "int" || t.getText() == "int*"  || t.getText() == "char*"){
 		nextFreeSymbolIndex +=8;
 	}else if(t.getText() == "char"){
 		nextFreeSymbolIndex +=8;
 	}
-	SymbolIndex.insert(make_pair(name,nextFreeSymbolIndex));		
+	SymbolIndex.insert(make_pair(name,nextFreeSymbolIndex));
+	nextFreeSymbolIndex += tableSize;		
 }
 
 string CFG::create_new_tempvar(Type t) {

@@ -9,12 +9,13 @@ using namespace std;
 
 class DeclarArray : public Statement{
    public:
-		DeclarVar(vector<string>* oneVars, string oneType) : myVars(oneVars){myType = new Type(oneType); }
-		~DeclarVar();
+		DeclarArray(string oneName, string oneType, string oneInt) : myName(oneName),size(stoi(oneInt)){myType = new Type(oneType); }
+		~DeclarArray();
 		/*Creates the correspondant IR instruction of this node in CFG*/
 		string buildIR(CFG* cfg);
       
     protected:
-		vector<string>* myVars;
+        string myName;
 		Type* myType;
+		int size;
 };

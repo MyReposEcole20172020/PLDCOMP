@@ -7,10 +7,12 @@ enum ENUMTYPE{
     VOID,
     INT,
     CHAR,
+    INTPOINTER,
+    CHARPOINTER,
     UNKNOWN
 };
 
-const string typeLabel[4] = {"void","int","char","unknown"};
+const string typeLabel[6] = {"void","int","char","int*","char*","unknown"};
 
 /*Node which represents the type of variable or return*/
 

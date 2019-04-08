@@ -1,0 +1,241 @@
+digraph {
+	ordering=out;
+	ranksep=.4;
+	node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="lightgrey", style="filled, solid"];
+	edge [arrowsize=.5, color="black"]
+
+	node0x1fead50[label="prog"];
+	node0x1ff4a00[label="funct"];
+	node0x1ff74a0[label="deffunc"];
+	node0x1ff5550[label="int"]
+	node0x1ff5e80[label="square"]
+	node0x1ff6f90[label="("]
+	node0x1ff79a0[label="paramdec"];
+	node0x1ff7a00[label="int"]
+	node0x1ff7c20[label="a"]
+	node0x1ff7c60[label=")"]
+	node0x1ff7c90[label="block"];
+	node0x1ff97b0[label="{"]
+	node0x1ff9ad0[label="statement"];
+	node0x1ffb9d0[label="ret"];
+	node0x1ff6440[label="return"]
+	node0x20014b0[label="expr"];
+	node0x1ffc1a0[label="expr"];
+	node0x1ffcc10[label="a"]
+	node0x20017a0[label="*"]
+	node0x2001820[label="expr"];
+	node0x2001ba0[label="a"]
+	node0x1ff6780[label=";"]
+	node0x1ffd120[label="}"]
+	node0x2004310[label="funct"];
+	node0x20044f0[label="deffunc"];
+	node0x1ff3dc0[label="int"]
+	node0x1ffd0a0[label="main"]
+	node0x1fff340[label="("]
+	node0x2004450[label="paramdec"];
+	node0x1ff9cc0[label="int"]
+	node0x2001de0[label="arg"]
+	node0x1ffd1e0[label=")"]
+	node0x20044a0[label="block"];
+	node0x20058a0[label="{"]
+	node0x2004360[label="statement"];
+	node0x2002170[label="declararray"];
+	node0x2006030[label="char"]
+	node0x2006720[label="tab"]
+	node0x2006b30[label="["]
+	node0x2006d70[label="10"]
+	node0x2006e30[label="]"]
+	node0x2006fa0[label=";"]
+	node0x2006fd0[label="statement"];
+	node0x20071c0[label="declarvar"];
+	node0x2007260[label="int"]
+	node0x20072c0[label="i"]
+	node0x20080f0[label=";"]
+	node0x2008120[label="statement"];
+	node0x2008250[label="forins"];
+	node0x20083b0[label="for"]
+	node0x20085b0[label="("]
+	node0x2008710[label="expr"];
+	node0x2009890[label="i"]
+	node0x20027b0[label="="]
+	node0x2008890[label="expr"];
+	node0x1ff9830[label="0"]
+	node0x2001e70[label=";"]
+	node0x200c4e0[label="expr"];
+	node0x2001e10[label="expr"];
+	node0x2001d40[label="i"]
+	node0x200c490[label="compare"];
+	node0x2001f70[label="<"]
+	node0x200cbc0[label="expr"];
+	node0x2001da0[label="10"]
+	node0x1ffa5c0[label=";"]
+	node0x1ffff10[label="expr"];
+	node0x20095b0[label="i"]
+	node0x20039a0[label="++"]
+	node0x1ffd1a0[label=")"]
+	node0x200ea70[label="block"];
+	node0x2000540[label="{"]
+	node0x200cf80[label="statement"];
+	node0x200ecf0[label="exprstat"];
+	node0x200ec00[label="expr"];
+	node0x200eac0[label="elemlv"];
+	node0x1ffa620[label="tab"]
+	node0x2010b70[label="["]
+	node0x200fe80[label="expr"];
+	node0x2008640[label="i"]
+	node0x20105d0[label="]"]
+	node0x20102b0[label="="]
+	node0x20122c0[label="expr"];
+	node0x200f7e0[label="'a'"]
+	node0x20146b0[label=";"]
+	node0x2014700[label="statement"];
+	node0x2014810[label="exprstat"];
+	node0x20148f0[label="expr"];
+	node0x2014e50[label="execfunc"];
+	node0x2014d60[label="putchar"]
+	node0x20150b0[label="("]
+	node0x2015130[label="expr"];
+	node0x20156f0[label="elemrv"];
+	node0x2015470[label="tab"]
+	node0x2015750[label="["]
+	node0x20157d0[label="expr"];
+	node0x2015830[label="i"]
+	node0x2015870[label="]"]
+	node0x20158b0[label=")"]
+	node0x2015970[label=";"]
+	node0x2015a20[label="statement"];
+	node0x2015a70[label="exprstat"];
+	node0x2015b10[label="expr"];
+	node0x2015bb0[label="execfunc"];
+	node0x2015dd0[label="putchar"]
+	node0x20164b0[label="("]
+	node0x2016550[label="expr"];
+	node0x2016630[label="'\n'"]
+	node0x2016670[label=")"]
+	node0x2016f40[label=";"]
+	node0x2017080[label="}"]
+	node0x2017100[label="statement"];
+	node0x20171a0[label="ret"];
+	node0x20172e0[label="return"]
+	node0x2017360[label="expr"];
+	node0x2017440[label="0"]
+	node0x2017480[label=";"]
+	node0x2017600[label="}"]
+	node0x1fead50 -> node0x1ff4a00;
+	node0x1fead50 -> node0x2004310;
+	node0x1ff4a00 -> node0x1ff74a0;
+	node0x1ff74a0 -> node0x1ff5550;
+	node0x1ff74a0 -> node0x1ff5e80;
+	node0x1ff74a0 -> node0x1ff6f90;
+	node0x1ff74a0 -> node0x1ff79a0;
+	node0x1ff74a0 -> node0x1ff7c60;
+	node0x1ff74a0 -> node0x1ff7c90;
+	node0x1ff79a0 -> node0x1ff7a00;
+	node0x1ff79a0 -> node0x1ff7c20;
+	node0x1ff7c90 -> node0x1ff97b0;
+	node0x1ff7c90 -> node0x1ff9ad0;
+	node0x1ff7c90 -> node0x1ffd120;
+	node0x1ff9ad0 -> node0x1ffb9d0;
+	node0x1ffb9d0 -> node0x1ff6440;
+	node0x1ffb9d0 -> node0x20014b0;
+	node0x1ffb9d0 -> node0x1ff6780;
+	node0x20014b0 -> node0x1ffc1a0;
+	node0x20014b0 -> node0x20017a0;
+	node0x20014b0 -> node0x2001820;
+	node0x1ffc1a0 -> node0x1ffcc10;
+	node0x2001820 -> node0x2001ba0;
+	node0x2004310 -> node0x20044f0;
+	node0x20044f0 -> node0x1ff3dc0;
+	node0x20044f0 -> node0x1ffd0a0;
+	node0x20044f0 -> node0x1fff340;
+	node0x20044f0 -> node0x2004450;
+	node0x20044f0 -> node0x1ffd1e0;
+	node0x20044f0 -> node0x20044a0;
+	node0x2004450 -> node0x1ff9cc0;
+	node0x2004450 -> node0x2001de0;
+	node0x20044a0 -> node0x20058a0;
+	node0x20044a0 -> node0x2004360;
+	node0x20044a0 -> node0x2006fd0;
+	node0x20044a0 -> node0x2008120;
+	node0x20044a0 -> node0x2017100;
+	node0x20044a0 -> node0x2017600;
+	node0x2004360 -> node0x2002170;
+	node0x2002170 -> node0x2006030;
+	node0x2002170 -> node0x2006720;
+	node0x2002170 -> node0x2006b30;
+	node0x2002170 -> node0x2006d70;
+	node0x2002170 -> node0x2006e30;
+	node0x2002170 -> node0x2006fa0;
+	node0x2006fd0 -> node0x20071c0;
+	node0x20071c0 -> node0x2007260;
+	node0x20071c0 -> node0x20072c0;
+	node0x20071c0 -> node0x20080f0;
+	node0x2008120 -> node0x2008250;
+	node0x2008250 -> node0x20083b0;
+	node0x2008250 -> node0x20085b0;
+	node0x2008250 -> node0x2008710;
+	node0x2008250 -> node0x2001e70;
+	node0x2008250 -> node0x200c4e0;
+	node0x2008250 -> node0x1ffa5c0;
+	node0x2008250 -> node0x1ffff10;
+	node0x2008250 -> node0x1ffd1a0;
+	node0x2008250 -> node0x200ea70;
+	node0x2008710 -> node0x2009890;
+	node0x2008710 -> node0x20027b0;
+	node0x2008710 -> node0x2008890;
+	node0x2008890 -> node0x1ff9830;
+	node0x200c4e0 -> node0x2001e10;
+	node0x200c4e0 -> node0x200c490;
+	node0x200c4e0 -> node0x200cbc0;
+	node0x2001e10 -> node0x2001d40;
+	node0x200c490 -> node0x2001f70;
+	node0x200cbc0 -> node0x2001da0;
+	node0x1ffff10 -> node0x20095b0;
+	node0x1ffff10 -> node0x20039a0;
+	node0x200ea70 -> node0x2000540;
+	node0x200ea70 -> node0x200cf80;
+	node0x200ea70 -> node0x2014700;
+	node0x200ea70 -> node0x2015a20;
+	node0x200ea70 -> node0x2017080;
+	node0x200cf80 -> node0x200ecf0;
+	node0x200ecf0 -> node0x200ec00;
+	node0x200ecf0 -> node0x20146b0;
+	node0x200ec00 -> node0x200eac0;
+	node0x200ec00 -> node0x20102b0;
+	node0x200ec00 -> node0x20122c0;
+	node0x200eac0 -> node0x1ffa620;
+	node0x200eac0 -> node0x2010b70;
+	node0x200eac0 -> node0x200fe80;
+	node0x200eac0 -> node0x20105d0;
+	node0x200fe80 -> node0x2008640;
+	node0x20122c0 -> node0x200f7e0;
+	node0x2014700 -> node0x2014810;
+	node0x2014810 -> node0x20148f0;
+	node0x2014810 -> node0x2015970;
+	node0x20148f0 -> node0x2014e50;
+	node0x2014e50 -> node0x2014d60;
+	node0x2014e50 -> node0x20150b0;
+	node0x2014e50 -> node0x2015130;
+	node0x2014e50 -> node0x20158b0;
+	node0x2015130 -> node0x20156f0;
+	node0x20156f0 -> node0x2015470;
+	node0x20156f0 -> node0x2015750;
+	node0x20156f0 -> node0x20157d0;
+	node0x20156f0 -> node0x2015870;
+	node0x20157d0 -> node0x2015830;
+	node0x2015a20 -> node0x2015a70;
+	node0x2015a70 -> node0x2015b10;
+	node0x2015a70 -> node0x2016f40;
+	node0x2015b10 -> node0x2015bb0;
+	node0x2015bb0 -> node0x2015dd0;
+	node0x2015bb0 -> node0x20164b0;
+	node0x2015bb0 -> node0x2016550;
+	node0x2015bb0 -> node0x2016670;
+	node0x2016550 -> node0x2016630;
+	node0x2017100 -> node0x20171a0;
+	node0x20171a0 -> node0x20172e0;
+	node0x20171a0 -> node0x2017360;
+	node0x20171a0 -> node0x2017480;
+	node0x2017360 -> node0x2017440;
+}

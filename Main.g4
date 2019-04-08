@@ -6,7 +6,7 @@ funct : deffunc | declarfunc;
 
 	
 expr: execfunc		# exfunc
-	| elem		# elemarray
+	| elemrv		# elemarray
 	| 'sizeof' '(' (TYPE|VAR) ')' # sizeof
 	| VAR ('++'|'--')	# postop
 	| ('++'|'--') VAR	# preop 
@@ -21,14 +21,17 @@ expr: execfunc		# exfunc
 	| expr '|' expr         # ouBin
 	| expr ('&&'|'||') expr	# exprBin
 	| expr compare expr 	# cmp
-	| (VAR|elem) ('*='|'/='|'+='|'-='|'%='|'&='|'^='|'|='|'=') expr  
+	| (VAR|elemlv) ('*='|'/='|'+='|'-='|'%='|'&='|'^='|'|='|'=') expr # Assignement
 	;
 
 compare: ('<'|'>') '='?
 	| ('!'|'=') '='
 	;
 
-elem : VAR '[' expr ']'
+elemlv : VAR '[' expr ']'
+	;
+
+elemrv : VAR '[' expr ']'
 	;
 
 ifins: 'if' '(' expr ')' (statement|block) elseifins* elseins?;

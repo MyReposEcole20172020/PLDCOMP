@@ -3,22 +3,13 @@ int square (int a) {
 }
 
 int main(int arg){
-	int x = sizeof(int);
-	int z = sizeof(int);
-	int y = 5;
-	z |= y;
-	int a = 0; 
-	if(square(5)){
-		putchar('a');
-	}else if(3 > 4){
-		putchar('b');
-	}else if(3 > 2){
-		if(a > 6)
-			for(x = 0; x < 3; x++)
-			putchar('s');
-	}else{
-		putchar('c');
+	char tab[10];
+	int i;
+	for (i = 0; i < 10; i++) {
+	    tab[i] = 'a';
+	    putchar(tab[i]);
+	    putchar('\n');
 	}
-    return z;
+	return 0;
 }
 
