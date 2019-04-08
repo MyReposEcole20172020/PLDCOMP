@@ -125,6 +125,36 @@ class ModInstr : public IRInstr {
 		string y;
 };
 
+class AndBinInstr : public IRInstr {
+	public:
+		AndBinInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
+		/** Actual code generation */
+		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
+	private :
+		string x;
+		string y;
+};
+
+class OuExBinInstr : public IRInstr {
+	public:
+		OuExBinInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
+		/** Actual code generation */
+		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
+	private :
+		string x;
+		string y;
+};
+
+class OuBinInstr : public IRInstr {
+	public:
+		OuBinInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
+		/** Actual code generation */
+		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
+	private :
+		string x;
+		string y;
+};
+
 class CmpInstr : public IRInstr {
 	public:
 		CmpInstr(BasicBlock* bb_, Operation op, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, op, t, destination), x(operand1), y(operand2) {}

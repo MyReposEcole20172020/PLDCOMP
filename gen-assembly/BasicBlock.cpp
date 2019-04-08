@@ -74,6 +74,15 @@ void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> param
 		case IRInstr::rmem :
 			instrs.push_back(new RmemInstr(this, t, params[0],params[1]));
 			break;
+		case IRInstr::and_bin :
+			instrs.push_back(new AndBinInstr(this, t, params[0], params[1], params[2]));
+			break;
+		case IRInstr::ou_ex_bin :
+			instrs.push_back(new OuExBinInstr(this, t, params[0], params[1], params[2]));
+			break;
+		case IRInstr::ou_bin :
+			instrs.push_back(new OuBinInstr(this, t, params[0], params[1], params[2]));
+			break;
 		case IRInstr::copy :
 			instrs.push_back(new CopyInstr(this, t, params[0],params[1]));
 			break;
