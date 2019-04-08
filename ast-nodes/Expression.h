@@ -12,7 +12,7 @@ enum OPTYPE{
   ADD,SUB,MULT,DIV,MOD,ANDBIN,OUEXBIN,OUBIN,POSTINC,POSTDEC,PREINC,PREDEC,GREAT,LESS,GREATEQ,LESSEQ,EQUAL,UNEQUAL
 };
 
-const string opNames[18] = {"+","-","*","/","%","&","^","|","++","--","++","--",">","<",">=","<=","==","!="};
+const string opNames[21] = {"+","-","*","/","%","&","^","|","++","--","++","--",">","<",">=","<=","==","!="};
 
 /*Node which represents the operator of binary expression*/
 
@@ -175,6 +175,58 @@ class ExprSubAssign : public Expr {
 			return 0;
 		}
 		virtual ~ExprSubAssign(){delete myExpr; delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		Expr* myExpr; 
+};
+
+class ExprModAssign : public Expr {
+    public:
+		ExprModAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprModAssign(){delete myExpr; delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		Expr* myExpr; 
+};
+
+class ExprAndBinAssign : public Expr {
+    public:
+		ExprAndBinAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprAndBinAssign(){delete myExpr; delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		Expr* myExpr; 
+};
+
+class ExprOuExBinAssign : public Expr {
+    public:
+		ExprOuExBinAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprOuExBinAssign(){delete myExpr; delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		Expr* myExpr; 
+};
+
+class ExprOuBinAssign : public Expr {
+    public:
+		ExprOuBinAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprOuBinAssign(){delete myExpr; delete myVar;}
 		string buildIR(CFG * cfg);
 	protected:
 		ExprVar* myVar;
