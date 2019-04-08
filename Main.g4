@@ -21,7 +21,7 @@ expr: execfunc		# exfunc
 	| expr '|' expr         # ouBin
 	| expr ('&&'|'||') expr	# exprBin
 	| expr compare expr 	# cmp
-	| (VAR|elem) ('*='|'/='|'+='|'-='|'=') expr          # Assignement
+	| (VAR|elem) ('*='|'/='|'+='|'-='|'%='|'&='|'^='|'|='|'=') expr          # Assignement
 	;
 
 compare: ('<'|'>') '='?

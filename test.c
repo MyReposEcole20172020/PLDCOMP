@@ -5,7 +5,8 @@ int square (int a) {
 int main(int arg){
 	int x = sizeof(int);
 	int z = sizeof(int);
-	int y = 10%3;
+	int y = 5;
+	z |= y;
 	int a = 7; 
 	if(6 < 5){
 		putchar('a');

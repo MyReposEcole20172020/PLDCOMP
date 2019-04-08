@@ -202,17 +202,25 @@ public:
         string name = context->VAR()->getText();
         Expr* expr = visit(context->expr()).as<Expr*>();
         Expr* assign = nullptr;
-	if(context->children[1]->getText() == "="){
-		assign = new ExprAssign(name,expr);
-	}else if(context->children[1]->getText() == "*="){
-		assign = new ExprMultAssign(name,expr);
-	}else if(context->children[1]->getText() == "/="){
-		assign = new ExprDivAssign(name,expr);
-	}else if(context->children[1]->getText() == "+="){
-		assign = new ExprAddAssign(name,expr);
-	}else if(context->children[1]->getText() == "-="){
-		assign = new ExprSubAssign(name,expr);
-	}
+		if(context->children[1]->getText() == "="){
+			assign = new ExprAssign(name,expr);
+		}else if(context->children[1]->getText() == "*="){
+			assign = new ExprMultAssign(name,expr);
+		}else if(context->children[1]->getText() == "/="){
+			assign = new ExprDivAssign(name,expr);
+		}else if(context->children[1]->getText() == "+="){
+			assign = new ExprAddAssign(name,expr);
+		}else if(context->children[1]->getText() == "-="){
+			assign = new ExprSubAssign(name,expr);
+		}else if(context->children[1]->getText() == "%="){
+			assign = new ExprModAssign(name,expr);
+		}else if(context->children[1]->getText() == "&="){
+			assign = new ExprAndBinAssign(name,expr);
+		}else if(context->children[1]->getText() == "^="){
+			assign = new ExprOuExBinAssign(name,expr);
+		}else if(context->children[1]->getText() == "|="){
+			assign = new ExprOuBinAssign(name,expr);
+		}
         return assign;
     }
 
