@@ -7,8 +7,8 @@ int main(int arg){
 	int z = sizeof(int);
 	int y = 5;
 	z |= y;
-	int a = 7; 
-	if(6 < 5){
+	int a = 0; 
+	if(square(5)){
 		putchar('a');
 	}else if(3 > 4){
 		putchar('b');
