@@ -9,10 +9,10 @@ using namespace std;
 class CFG;
 
 enum OPTYPE{
-  ADD,SUB,MULT,DIV,POSTINC,POSTDEC,PREINC,PREDEC,GREAT,LESS,GREATEQ,LESSEQ,EQUAL,UNEQUAL
+  ADD,SUB,MULT,DIV,MOD,POSTINC,POSTDEC,PREINC,PREDEC,GREAT,LESS,GREATEQ,LESSEQ,EQUAL,UNEQUAL
 };
 
-const string opNames[14] = {"+","-","*","/","++","--","++","--",">","<",">=","<=","==","!="};
+const string opNames[15] = {"+","-","*","/","%","++","--","++","--",">","<",">=","<=","==","!="};
 
 /*Node which represents the operator of binary expression*/
 
@@ -179,4 +179,17 @@ class ExprSubAssign : public Expr {
 	protected:
 		ExprVar* myVar;
 		Expr* myExpr; 
+};
+
+class ExprSizeOf : public Expr {
+    public:
+		ExprSizeOf(string oneType, string varName ) {type = Type("unknown"); myVar = new ExprVar(varName); evalType = oneType;}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprSizeOf(){delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		string evalType; 
 };

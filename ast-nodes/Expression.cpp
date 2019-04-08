@@ -56,6 +56,12 @@ string ExprBinary::buildIR(CFG * cfg){
             params.push_back(var2);
             cfg->current_bb->add_IRInstr(IRInstr::div,this->getType(),params);
             break;
+	case MOD:
+            params.push_back(var3);
+            params.push_back(var1);
+            params.push_back(var2);
+            cfg->current_bb->add_IRInstr(IRInstr::mod,this->getType(),params);
+            break;
 		case GREAT:
 			params.push_back(var3);
             params.push_back(var2);
@@ -75,7 +81,6 @@ string ExprBinary::buildIR(CFG * cfg){
             cfg->current_bb->add_IRInstr(IRInstr::cmp_le,this->getType(),params);
             break;
 		case LESSEQ:
-		    cout << "dqsdq" << endl;
 			params.push_back(var3);
             params.push_back(var1);
             params.push_back(var2);
@@ -335,4 +340,24 @@ string ExprSubAssign::buildIR(CFG * cfg){
     params3.push_back(var3);
     cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
     return left;
+}
+
+string ExprSizeOf::buildIR(CFG * cfg){
+    Type typeInt("int");
+    string var = cfg->create_new_tempvar(typeInt);
+    if(evalType != ""){
+	int size;
+	if(evalType == "int"){
+	    size = 8;
+	}else if(evalType == "char"){
+	    size = 1;
+	}
+	vector<string> params;
+	params.push_back(var);
+	params.push_back(to_string(size));
+	cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params);
+    }else{
+	string varName = myVar->buildIR(cfg);
+    }
+    return var;
 }
