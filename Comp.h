@@ -102,15 +102,27 @@ public:
     }
 
     antlrcpp::Any visitOuBin(MainParser::OuBinContext *context) override{
-	return visitChildren(context);
+		Expr* temp = nullptr;
+		Expr* op1 = visit(context->expr(0)).as<Expr*>();
+        Expr* op2 = visit(context->expr(1)).as<Expr*>();
+        temp = new ExprBinary(OPTYPE::OUBIN,op1,op2);
+		return temp;
     }
   
     antlrcpp::Any visitOuExBin(MainParser::OuExBinContext *context) override{
-	return visitChildren(context);
+		Expr* temp = nullptr;
+		Expr* op1 = visit(context->expr(0)).as<Expr*>();
+        Expr* op2 = visit(context->expr(1)).as<Expr*>();
+        temp = new ExprBinary(OPTYPE::OUEXBIN,op1,op2);
+		return temp;
     }
     
     antlrcpp::Any visitEtBin(MainParser::EtBinContext *context) override{
-	return visitChildren(context);
+		Expr* temp = nullptr;
+		Expr* op1 = visit(context->expr(0)).as<Expr*>();
+        Expr* op2 = visit(context->expr(1)).as<Expr*>();
+        temp = new ExprBinary(OPTYPE::ANDBIN,op1,op2);
+		return temp;
     }
 
     antlrcpp::Any visitChar(MainParser::CharContext *context) override{
