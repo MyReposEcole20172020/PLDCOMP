@@ -34,9 +34,16 @@ void BasicBlock::gen_asm(ostream &o) {
         jne     .LBB0_2*/
 		string lastAssigned = instrs.back()->getDestination();
 		int offset = get_cfg()->get_var_index(lastAssigned);
-		o << "        cmpq   $0, " << offset << "(%rbp) \n";
-		o << "        je  ";
-    	o << exit_false->get_label() <<" \n";
+		if(instrs.back()->getOp() == IRInstr::wmem){
+			o << "	movq	" << offset << "(%rbp)," << " %rax\n";
+			o << "        cmpq   $0, " << "(%rax) \n";
+			o << "        je  ";
+			o << exit_false->get_label() <<" \n";
+		}else{
+			o << "        cmpq   $0, " << offset << "(%rbp) \n";
+			o << "        je  ";
+			o << exit_false->get_label() <<" \n";
+		}
 	}
 	o << "        jmp  ";
 	o << exit_true->get_label() <<" \n";
