@@ -35,7 +35,7 @@ main:
     movq    %rdi, -16(%rbp) 
 
 .main : 
-	movb  $-104,-24(%rbp)
+	movq  $-104,-24(%rbp)
 	movq  $0,-120(%rbp)
 	movq  $-112,-128(%rbp)
 	movq  %rbp, %rax
@@ -57,7 +57,7 @@ main:
         je  .LBB_main_3 
         jmp  .LBB_main_2 
 .LBB_main_2 : 
-	movb  $8,-152(%rbp)
+	movq  $8,-152(%rbp)
 	movq  -112(%rbp), %rax
 	mulq  -152(%rbp)
 	movq  %rax, -160(%rbp)
@@ -67,50 +67,49 @@ main:
 	movq  %rbp, %rax
 	addq  -168(%rbp), %rax
 	movq  %rax, -168(%rbp)
-	movb  $97,-176(%rbp)
+	movb  $98,-176(%rbp)
 	movq  -168(%rbp), %rax
 	movb  -176(%rbp), %dl
 	movb  %dl, (%rax)
-	movb  $8,-184(%rbp)
-	movq  -112(%rbp), %rax
-	mulq  -184(%rbp)
-	movq  %rax, -192(%rbp)
-	movq  -192(%rbp), %rax
-	addq  -24(%rbp), %rax
-	movq  %rax, -200(%rbp)
-	movq  %rbp, %rax
-	addq  -200(%rbp), %rax
-	movq  %rax, -200(%rbp)
-	movq  -200(%rbp) , %rax
-	movb  (%rax), %dl
-	movb  %dl, -208(%rbp)
-        movq    -208(%rbp), %rdi
+	movb  $10,-184(%rbp)
+        movq    -184(%rbp), %rdi
         call putchar@PLT
-	movb  $10,-216(%rbp)
-        movq    -216(%rbp), %rdi
-        call putchar@PLT
-	movq  $1,-224(%rbp)
+	movq  $1,-192(%rbp)
 
 	movq  -112(%rbp),%rax
-	movq  %rax,-232(%rbp)
+	movq  %rax,-200(%rbp)
 
 	movq  -112(%rbp), %rax
-	addq  -224(%rbp), %rax
-	movq  %rax, -240(%rbp)
+	addq  -192(%rbp), %rax
+	movq  %rax, -208(%rbp)
 
-	movq  -240(%rbp),%rax
+	movq  -208(%rbp),%rax
 	movq  %rax,-112(%rbp)
 
         jmp  .LBB_main_1 
 .LBB_main_3 : 
-	movq  $0,-248(%rbp)
+	movq  $5,-216(%rbp)
+	movq  $8,-224(%rbp)
+	movq  -216(%rbp), %rax
+	mulq  -224(%rbp)
+	movq  %rax, -232(%rbp)
+	movq  -232(%rbp), %rax
+	addq  -24(%rbp), %rax
+	movq  %rax, -240(%rbp)
+	movq  %rbp, %rax
+	addq  -240(%rbp), %rax
+	movq  %rax, -240(%rbp)
+	movb  $57,-248(%rbp)
+	movq  -240(%rbp), %rax
+	movb  -248(%rbp), %dl
+	movb  %dl, (%rax)
 	movq  $-8,-256(%rbp)
 	movq  %rbp, %rax
 	addq  -256(%rbp), %rax
 	movq  %rax, -256(%rbp)
 	movq  -256(%rbp), %rax
-	movq  -248(%rbp), %r10
-	movq  %r10, (%rax)
+	movb  -248(%rbp), %dl
+	movb  %dl, (%rax)
         jmp  .EPILOGmain 
 .LBB_main_4 : 
         jmp  .EPILOGmain 

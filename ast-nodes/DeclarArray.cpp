@@ -19,6 +19,6 @@ string DeclarArray::buildIR(CFG* cfg){
     vector<string> params;
     params.push_back(myName);
     params.push_back(to_string(-1*cfg->getNextFreeSymbolIndex()));
-    cfg->current_bb->add_IRInstr(IRInstr::ldconst,*myType,params);
+    cfg->current_bb->add_IRInstr(IRInstr::ldconst,Type("int"),params);
     return myName;
 }

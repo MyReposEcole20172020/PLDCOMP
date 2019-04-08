@@ -13,7 +13,7 @@ string ElemRv::buildIR(CFG* cfg){
 	}else if(tabType == "char*"){
 	    type = Type("char");
 	} 
-	string var = cfg->create_new_tempvar(this->getType());
+	string var = cfg->create_new_tempvar(Type("int"));
 	vector<string> params;
 	params.push_back(var);
 	if(tabType == "int*"){
@@ -21,7 +21,7 @@ string ElemRv::buildIR(CFG* cfg){
 	}else if(tabType == "char*"){
 	    params.push_back(to_string(8));
 	} 
-    cfg->current_bb->add_IRInstr(IRInstr::ldconst,this->getType(),params);
+    cfg->current_bb->add_IRInstr(IRInstr::ldconst,Type("int"),params);
 	string var1;
 	string var2;
 	string var3;
