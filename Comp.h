@@ -80,6 +80,8 @@ public:
 
     antlrcpp::Any visitVar(MainParser::VarContext *context) override {
         string varName = context->VAR()->getText();
+        
+        
         return (Expr*)new ExprVar(varName);
     }
 
@@ -102,27 +104,15 @@ public:
     }
 
     antlrcpp::Any visitOuBin(MainParser::OuBinContext *context) override{
-		Expr* temp = nullptr;
-		Expr* op1 = visit(context->expr(0)).as<Expr*>();
-        Expr* op2 = visit(context->expr(1)).as<Expr*>();
-        temp = new ExprBinary(OPTYPE::OUBIN,op1,op2);
-		return temp;
+	return visitChildren(context);
     }
   
     antlrcpp::Any visitOuExBin(MainParser::OuExBinContext *context) override{
-		Expr* temp = nullptr;
-		Expr* op1 = visit(context->expr(0)).as<Expr*>();
-        Expr* op2 = visit(context->expr(1)).as<Expr*>();
-        temp = new ExprBinary(OPTYPE::OUEXBIN,op1,op2);
-		return temp;
+	return visitChildren(context);
     }
     
     antlrcpp::Any visitEtBin(MainParser::EtBinContext *context) override{
-		Expr* temp = nullptr;
-		Expr* op1 = visit(context->expr(0)).as<Expr*>();
-        Expr* op2 = visit(context->expr(1)).as<Expr*>();
-        temp = new ExprBinary(OPTYPE::ANDBIN,op1,op2);
-		return temp;
+	return visitChildren(context);
     }
 
     antlrcpp::Any visitChar(MainParser::CharContext *context) override{
@@ -200,27 +190,23 @@ public:
 
 	antlrcpp::Any visitAssignement(MainParser::AssignementContext *context) override {
         string name = context->VAR()->getText();
+
+        cout << "ASSI"<<endl;
+       currentBlock->changeSymbolStat(name, SYMBOL_STAT::DEFINED);
+
         Expr* expr = visit(context->expr()).as<Expr*>();
         Expr* assign = nullptr;
-		if(context->children[1]->getText() == "="){
-			assign = new ExprAssign(name,expr);
-		}else if(context->children[1]->getText() == "*="){
-			assign = new ExprMultAssign(name,expr);
-		}else if(context->children[1]->getText() == "/="){
-			assign = new ExprDivAssign(name,expr);
-		}else if(context->children[1]->getText() == "+="){
-			assign = new ExprAddAssign(name,expr);
-		}else if(context->children[1]->getText() == "-="){
-			assign = new ExprSubAssign(name,expr);
-		}else if(context->children[1]->getText() == "%="){
-			assign = new ExprModAssign(name,expr);
-		}else if(context->children[1]->getText() == "&="){
-			assign = new ExprAndBinAssign(name,expr);
-		}else if(context->children[1]->getText() == "^="){
-			assign = new ExprOuExBinAssign(name,expr);
-		}else if(context->children[1]->getText() == "|="){
-			assign = new ExprOuBinAssign(name,expr);
-		}
+	if(context->children[1]->getText() == "="){
+		assign = new ExprAssign(name,expr);
+	}else if(context->children[1]->getText() == "*="){
+		assign = new ExprMultAssign(name,expr);
+	}else if(context->children[1]->getText() == "/="){
+		assign = new ExprDivAssign(name,expr);
+	}else if(context->children[1]->getText() == "+="){
+		assign = new ExprAddAssign(name,expr);
+	}else if(context->children[1]->getText() == "-="){
+		assign = new ExprSubAssign(name,expr);
+	}
         return assign;
     }
 
@@ -235,10 +221,14 @@ public:
 
     antlrcpp::Any visitDeclarvar(MainParser::DeclarvarContext *context) override {
         string type = context->TYPE()->getText();
+        
+
         vector<string>* lesVars = new vector<string>;
         vector<antlr4::tree::TerminalNode *> vars = context->VAR();
         for(antlr4::tree::TerminalNode * oneVar : vars){
-            lesVars->push_back(oneVar->getText());
+            string nameVar = oneVar->getText();
+            lesVars->push_back(nameVar);
+            currentBlock->changeSymbolStat(nameVar, SYMBOL_STAT::NON_DEFINED);
         }
         Statement* declarVars = new DeclarVar(lesVars, type);
         return declarVars;
@@ -247,6 +237,8 @@ public:
     antlrcpp::Any visitDefWithDeclar(MainParser::DefWithDeclarContext *context) override{
         string type = context->TYPE()->getText();
         string name = context->VAR()->getText();
+       currentBlock->changeSymbolStat(name, SYMBOL_STAT::DEFINED);
+        cout << "oooo-- " <<  currentBlock->getSymbolStat(name) << endl; 
         Expr* expr = visit(context->expr()).as<Expr*>();
         DefVar* def = new DefVarWithDeclar(type,name,expr);
         return (Statement*)def;
@@ -311,11 +303,17 @@ public:
     antlrcpp::Any visitBlock(MainParser::BlockContext *context) override {
         vector<MainParser::StatementContext *> stats = context->statement();
         size_t length = stats.size();
-        Block* block = new Block;
+        cout << "okIN"<<endl;
+        Block * tmpBlock = currentBlock;
+         Block * block = new Block();
+        block->setParentBlock(currentBlock);
+        currentBlock = block;
         for(size_t i = 0; i < length; i++){
             Statement* stat = (Statement*)visit(stats[i]);
             block->addStatement(stat);
         }
+        cout << "okOUT"<<endl;
+        currentBlock = tmpBlock;
         return block;
     }
 
@@ -485,4 +483,7 @@ public:
 		}
 		return (Statement*)forins;
 	}
+    
+    protected:
+        Block * currentBlock = nullptr;
 };
