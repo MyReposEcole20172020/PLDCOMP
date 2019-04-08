@@ -17,6 +17,7 @@ class IRInstr {
 		    sub,
 		    mul,
 		    div,
+		    mod,
 		    rmem,
 		    wmem,
 		    call,
@@ -48,11 +49,9 @@ class IRInstr {
 
 class RetInstr : public IRInstr {
 	public:
-		RetInstr(BasicBlock* bb_, Type t, string params) : IRInstr(bb_, ret, t), value(params) {}
+		RetInstr(BasicBlock* bb_, Type t) : IRInstr(bb_, ret, t) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
-	private: 
-		string value;
 };
 
 class LdconstInstr : public IRInstr {
@@ -113,6 +112,16 @@ class DivInstr : public IRInstr {
 		string y;
 };
 
+class ModInstr : public IRInstr {
+	public:
+		ModInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
+		/** Actual code generation */
+		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
+	private :
+		string x;
+		string y;
+};
+
 class CmpInstr : public IRInstr {
 	public:
 		CmpInstr(BasicBlock* bb_, Operation op, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, op, t, destination), x(operand1), y(operand2) {}
@@ -147,6 +156,15 @@ class WmemInstr : public IRInstr {
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
 		string val;
+};
+
+class RmemInstr : public IRInstr {
+	public:
+		RmemInstr(BasicBlock* bb_, Type t, string destination, string adress) : IRInstr(bb_, rmem, t, destination), ad(adress) {}
+		/** Actual code generation */
+		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
+	private :
+		string ad;
 };
 
 

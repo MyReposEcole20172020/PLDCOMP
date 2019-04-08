@@ -59,14 +59,20 @@ void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> param
 		case IRInstr::div :
 			instrs.push_back(new DivInstr(this, t, params[0], params[1], params[2]));
 			break;
+		case IRInstr::mod :
+			instrs.push_back(new ModInstr(this, t, params[0], params[1], params[2]));
+			break;
 		case IRInstr::ret :
-			instrs.push_back(new RetInstr(this, t, params[0]));
+			instrs.push_back(new RetInstr(this, t));//params[0]
 			break;
 		case IRInstr::call :
 			instrs.push_back(new CallInstr(this, t, params));
 			break;
 		case IRInstr::wmem :
 			instrs.push_back(new WmemInstr(this, t, params[0],params[1]));
+			break;
+		case IRInstr::rmem :
+			instrs.push_back(new RmemInstr(this, t, params[0],params[1]));
 			break;
 		case IRInstr::copy :
 			instrs.push_back(new CopyInstr(this, t, params[0],params[1]));
