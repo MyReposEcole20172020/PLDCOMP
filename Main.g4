@@ -6,9 +6,11 @@ funct : deffunc | declarfunc;
 
 	
 expr: execfunc		# exfunc
+	| elem		# elemarray
+	| 'sizeof' '(' (TYPE|VAR) ')' # sizeof
 	| VAR ('++'|'--')	# postop
 	| ('++'|'--') VAR	# preop 
-	| expr ('*'|'/') expr # multdiv
+	| expr ('*'|'/'|'%') expr # multdivmod
 	| expr ('+'|'-') expr # addsub
 	| INT			# const
 	| VAR			# var
@@ -19,11 +21,14 @@ expr: execfunc		# exfunc
 	| expr '|' expr         # ouBin
 	| expr ('&&'|'||') expr	# exprBin
 	| expr compare expr 	# cmp
-	| VAR ('*='|'/='|'+='|'-='|'=') expr          # Assignement
+	| (VAR|elem) ('*='|'/='|'+='|'-='|'=') expr          # Assignement
 	;
 
 compare: ('<'|'>') '='?
 	| ('!'|'=') '='
+	;
+
+elem : VAR '[' expr ']'
 	;
 
 ifins: 'if' '(' expr ')' (statement|block) elseifins* elseins?;
@@ -39,6 +44,9 @@ forins : 'for' '(' expr? ';' expr? ';' expr? ')' (statement|block) ;
 declarvar: TYPE VAR (',' VAR)* ';'
 	;
 
+declararray: TYPE VAR '[' INT ']' ';' 
+	;
+
 defvar : TYPE VAR '=' expr ';' #defWithDeclar
 	;
 
@@ -51,6 +59,8 @@ declarfunc : TYPE VAR '(' paramdec? ')' ';' #declarFuncNormal
 	;  
 
 execfunc : 'putchar' '(' expr ')' #putchar
+	| 'printf' '(' STR (',' VAR)* ')' #printf 
+	| 'getchar' '(' ')' #getchar
 	| VAR '(' param? ')' #normalExec
 	;
 
@@ -62,6 +72,7 @@ statement : ret
 	| defvar
 	| exprstat 
 	| declarvar
+	| declararray
 	| ifins
 	| whileins
 	| forins
@@ -82,6 +93,7 @@ VAR : [a-zA-Z][a-zA-Z0-9]*;
 CHAR : '\'\\'CHARESC '\''
 	| '\'' ~['\\\r\n\t] '\'';
 CHARESC : [abefnrtv'"?\\];
+STR : '"' (~[%]|'%d'|'%c')* '"';
 WS : [\t\r\n ] -> skip;
 
 

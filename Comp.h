@@ -18,8 +18,10 @@
 #include "ast-nodes/ParamDec.h"
 #include "ast-nodes/If.h"
 #include "ast-nodes/Else.h"
+#include "ast-nodes/ElseIf.h"
 #include "ast-nodes/While.h"
 #include "ast-nodes/For.h"
+#include "ast-nodes/GetChar.h"
 
 using namespace std;
 
@@ -54,6 +56,18 @@ public:
         return (Expr*)visit(context->expr());
     }
 
+    antlrcpp::Any visitSizeof(MainParser::SizeofContext *context) override {
+	Expr* exp = nullptr;
+	if(context->TYPE() != nullptr){
+	    string type = context->TYPE()->getText();
+	    exp = new ExprSizeOf(type,"");
+	}else if(context->VAR() != nullptr){
+	    string var = context->VAR()->getText();
+	    exp = new ExprSizeOf("",var);
+	}
+        return exp;
+    }
+
     antlrcpp::Any visitExfunc(MainParser::ExfuncContext *context) override {
         Expr* e = (Expr*)visit(context->execfunc());
         return e;
@@ -69,7 +83,7 @@ public:
         return (Expr*)new ExprVar(varName);
     }
 
-    antlrcpp::Any visitMultdiv(MainParser::MultdivContext *context) override {
+    antlrcpp::Any visitMultdivmod(MainParser::MultdivmodContext *context) override {
         Expr* temp = nullptr;
         if(context->children[1]->getText() == "*"){
             Expr* op1 = visit(context->expr(0)).as<Expr*>();
@@ -79,6 +93,10 @@ public:
             Expr* op1 = visit(context->expr(0)).as<Expr*>();
             Expr* op2 = visit(context->expr(1)).as<Expr*>();
             temp = new ExprBinary(OPTYPE::DIV,op1,op2);
+        }else if(context->children[1]->getText() == "%"){
+            Expr* op1 = visit(context->expr(0)).as<Expr*>();
+            Expr* op2 = visit(context->expr(1)).as<Expr*>();
+            temp = new ExprBinary(OPTYPE::MOD,op1,op2);
         }
         return temp;
     }
@@ -255,6 +273,11 @@ public:
         return (Expr*)ex;
     }
 
+    antlrcpp::Any visitGetchar(MainParser::GetcharContext *context) override{
+        GetChar* ex = new GetChar("getchar");
+        return (Expr*)ex;
+    }
+
     antlrcpp::Any visitNormalExec(MainParser::NormalExecContext *context) override{
         string funcName = context->VAR()->getText();
 		Param* myParams = nullptr;
@@ -380,11 +403,25 @@ public:
 			Else* elseins = (Else*)visit(context->elseins());
 			ifins->addElse(elseins);
 		}
+		vector<MainParser::ElseifinsContext *> elseifs = context->elseifins();
+		for(MainParser::ElseifinsContext * ctx : elseifs){
+			ElseIf* temp = (ElseIf*)visit(ctx);
+			ifins->addElseIf(temp);
+		}
 		return (Statement*)ifins;
     }
 
     antlrcpp::Any visitElseifins(MainParser::ElseifinsContext *context) override {
-        return visitChildren(context);
+		Expr* exp = (Expr*)visit(context->expr());
+		ElseIf* elseifins = nullptr;
+		if(context->statement() != nullptr){
+			Statement* stat = (Statement*)visit(context->statement());  
+			elseifins = new ElseIf(exp, stat);
+		}else if(context->block() != nullptr){
+			Block* block = (Block*)visit(context->block());
+			elseifins = new ElseIf(exp, block);
+		}
+		return elseifins;
     }
 
     antlrcpp::Any visitElseins(MainParser::ElseinsContext *context) override {
