@@ -9,10 +9,10 @@ using namespace std;
 class CFG;
 
 enum OPTYPE{
-  ADD,SUB,MULT,DIV,MOD,POSTINC,POSTDEC,PREINC,PREDEC,GREAT,LESS,GREATEQ,LESSEQ,EQUAL,UNEQUAL
+  ADD,SUB,MULT,DIV,MOD,ANDBIN,OUEXBIN,OUBIN,POSTINC,POSTDEC,PREINC,PREDEC,GREAT,LESS,GREATEQ,LESSEQ,EQUAL,UNEQUAL
 };
 
-const string opNames[15] = {"+","-","*","/","%","++","--","++","--",">","<",">=","<=","==","!="};
+const string opNames[18] = {"+","-","*","/","%","&","^","|","++","--","++","--",">","<",">=","<=","==","!="};
 
 /*Node which represents the operator of binary expression*/
 

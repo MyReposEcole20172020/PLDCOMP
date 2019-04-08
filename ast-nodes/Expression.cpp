@@ -56,11 +56,29 @@ string ExprBinary::buildIR(CFG * cfg){
             params.push_back(var2);
             cfg->current_bb->add_IRInstr(IRInstr::div,this->getType(),params);
             break;
-	case MOD:
+		case MOD:
             params.push_back(var3);
             params.push_back(var1);
             params.push_back(var2);
             cfg->current_bb->add_IRInstr(IRInstr::mod,this->getType(),params);
+            break;
+		case ANDBIN:
+            params.push_back(var3);
+            params.push_back(var1);
+            params.push_back(var2);
+            cfg->current_bb->add_IRInstr(IRInstr::and_bin,this->getType(),params);
+            break;
+		case OUEXBIN:
+            params.push_back(var3);
+            params.push_back(var1);
+            params.push_back(var2);
+            cfg->current_bb->add_IRInstr(IRInstr::ou_ex_bin,this->getType(),params);
+            break;
+		case OUBIN:
+            params.push_back(var3);
+            params.push_back(var1);
+            params.push_back(var2);
+            cfg->current_bb->add_IRInstr(IRInstr::ou_bin,this->getType(),params);
             break;
 		case GREAT:
 			params.push_back(var3);
