@@ -84,7 +84,7 @@ list_in_tests = os.listdir("./tests/testsBackEnd/")
 listFile=[]
 listResult=[]
 listError=[]
-for name in list_in_tests:
+for name in sorted(list_in_tests):
 	if name[-2:] == '.c':
 		base=os.path.basename(name)
 		file=os.path.splitext(base)[0]
