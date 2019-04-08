@@ -34,9 +34,16 @@ void BasicBlock::gen_asm(ostream &o) {
         jne     .LBB0_2*/
 		string lastAssigned = instrs.back()->getDestination();
 		int offset = get_cfg()->get_var_index(lastAssigned);
-		o << "        cmpq   $0, " << offset << "(%rbp) \n";
-		o << "        je  ";
-    	o << exit_false->get_label() <<" \n";
+		if(instrs.back()->getOp() == IRInstr::wmem){
+			o << "	movq	" << offset << "(%rbp)," << " %rax\n";
+			o << "        cmpq   $0, " << "(%rax) \n";
+			o << "        je  ";
+			o << exit_false->get_label() <<" \n";
+		}else{
+			o << "        cmpq   $0, " << offset << "(%rbp) \n";
+			o << "        je  ";
+			o << exit_false->get_label() <<" \n";
+		}
 	}
 	o << "        jmp  ";
 	o << exit_true->get_label() <<" \n";
@@ -59,6 +66,9 @@ void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> param
 		case IRInstr::div :
 			instrs.push_back(new DivInstr(this, t, params[0], params[1], params[2]));
 			break;
+		case IRInstr::mod :
+			instrs.push_back(new ModInstr(this, t, params[0], params[1], params[2]));
+			break;
 		case IRInstr::ret :
 			instrs.push_back(new RetInstr(this, t));//params[0]
 			break;
@@ -67,6 +77,18 @@ void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> param
 			break;
 		case IRInstr::wmem :
 			instrs.push_back(new WmemInstr(this, t, params[0],params[1]));
+			break;
+		case IRInstr::rmem :
+			instrs.push_back(new RmemInstr(this, t, params[0],params[1]));
+			break;
+		case IRInstr::and_bin :
+			instrs.push_back(new AndBinInstr(this, t, params[0], params[1], params[2]));
+			break;
+		case IRInstr::ou_ex_bin :
+			instrs.push_back(new OuExBinInstr(this, t, params[0], params[1], params[2]));
+			break;
+		case IRInstr::ou_bin :
+			instrs.push_back(new OuBinInstr(this, t, params[0], params[1], params[2]));
 			break;
 		case IRInstr::copy :
 			instrs.push_back(new CopyInstr(this, t, params[0],params[1]));

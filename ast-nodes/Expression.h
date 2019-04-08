@@ -9,10 +9,12 @@ using namespace std;
 class CFG;
 
 enum OPTYPE{
-  ADD,SUB,MULT,DIV,POSTINC,POSTDEC,PREINC,PREDEC,GREAT,LESS,GREATEQ,LESSEQ,EQUAL,UNEQUAL
+  ADD,SUB,MULT,DIV,MOD,ANDBIN,OUEXBIN,OUBIN,POSTINC,POSTDEC,PREINC,PREDEC,GREAT,LESS,GREATEQ,LESSEQ,EQUAL,UNEQUAL
 };
 
-const string opNames[14] = {"+","-","*","/","++","--","++","--",">","<",">=","<=","==","!="};
+const string opNames[21] = {"+","-","*","/","%","&","^","|","++","--","++","--",">","<",">=","<=","==","!="};
+
+/*Node which represents the operator of binary expression*/
 
 /*Node which represents the operator of binary expression*/
 
@@ -179,4 +181,69 @@ class ExprSubAssign : public Expr {
 	protected:
 		ExprVar* myVar;
 		Expr* myExpr; 
+};
+
+class ExprModAssign : public Expr {
+    public:
+		ExprModAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprModAssign(){delete myExpr; delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		Expr* myExpr; 
+};
+
+class ExprAndBinAssign : public Expr {
+    public:
+		ExprAndBinAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprAndBinAssign(){delete myExpr; delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		Expr* myExpr; 
+};
+
+class ExprOuExBinAssign : public Expr {
+    public:
+		ExprOuExBinAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprOuExBinAssign(){delete myExpr; delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		Expr* myExpr; 
+};
+
+class ExprOuBinAssign : public Expr {
+    public:
+		ExprOuBinAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprOuBinAssign(){delete myExpr; delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		Expr* myExpr; 
+};
+
+class ExprSizeOf : public Expr {
+    public:
+		ExprSizeOf(string oneType, string varName ) {type = Type("unknown"); myVar = new ExprVar(varName); evalType = oneType;}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprSizeOf(){delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		string evalType; 
 };
