@@ -41,3 +41,15 @@ Type* Program::getFuncReturn(string name){
 	}
 	return returnType;
 }
+
+int Program::verifyScope()
+{
+	for (int i = 0; i < funcs[i]; i++)
+	{
+		DefFunc* defF = dynamic_cast<DefFunc*> (funcs[i]);
+		if (defF)
+		{
+
+		}
+	}
+}

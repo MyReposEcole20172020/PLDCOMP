@@ -14,6 +14,7 @@ class DefFunc : public Function{
 		~DefFunc();
 		//void addParameter(Parameter* param);
 		string getName() { return name;}
+		Block * getBlock() {return block;}
 		/*Creates the correspondant IR instruction of this node in CFG*/
 		string buildIR(CFG* cfg);
 	  

@@ -19,6 +19,7 @@ class Program{
         string buildIR();
         void generateCode(ofstream& o);
 	    Type* getFuncReturn(string name);
+        int verifyScope();
             
     protected:
         vector<Function*> funcs;
