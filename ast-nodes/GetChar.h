@@ -10,9 +10,6 @@ class GetChar : Expr{
 	public:
 		GetChar(string oneName) : funcName(oneName) { type=Type("char"); }
 		virtual ~GetChar();
-		int eval (){
-			return 0;
-		}
 		/*Creates the correspondant IR instruction of this node in CFG*/
 		string buildIR(CFG* cfg);
       

@@ -9,7 +9,6 @@ class ElemRv : public Expr{
 	public:
 		ElemRv(string oneName, Expr* oneExpr) : arrayName(oneName), myExpr(oneExpr) { type=Type("unknown"); }
 		virtual ~ElemRv();
-		int eval (){return 0;}
 		/*Creates the correspondant IR instruction of this node in CFG*/
 		string buildIR(CFG* cfg);
       

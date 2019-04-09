@@ -10,9 +10,6 @@ class PutChar : Expr{
 	public:
 		PutChar(string oneName, Expr* oneExpr) : funcName(oneName), myExpr(oneExpr) { type=Type("unknown"); }
 		virtual ~PutChar();
-		int eval (){
-			return 0;
-		}
 		/*Creates the correspondant IR instruction of this node in CFG*/
 		string buildIR(CFG* cfg);
       
