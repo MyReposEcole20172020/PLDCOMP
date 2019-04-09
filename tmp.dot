@@ -1,0 +1,55 @@
+digraph {
+	ordering=out;
+	ranksep=.4;
+	node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="lightgrey", style="filled, solid"];
+	edge [arrowsize=.5, color="black"]
+
+	node0x1d60d50[label="prog"];
+	node0x1d6a290[label="funct"];
+	node0x1d6c1d0[label="deffunc"];
+	node0x1d6c1a0[label="int"]
+	node0x1d6c280[label="main"]
+	node0x1d6c2c0[label="("]
+	node0x1d6c350[label=")"]
+	node0x1d6c2f0[label="block"];
+	node0x1d6c860[label="{"]
+	node0x1d6cb30[label="statement"];
+	node0x1d6e700[label="defvar"];
+	node0x1d6ff70[label="int"]
+	node0x1d6ffd0[label="a"]
+	node0x1d70630[label="="]
+	node0x1d6cd30[label="expr"];
+	node0x1d70670[label="10"]
+	node0x1d73aa0[label=";"]
+	node0x1d75a30[label="statement"];
+	node0x1d76060[label="ret"];
+	node0x1d714c0[label="return"]
+	node0x1d75d40[label="expr"];
+	node0x1d75d00[label="a"]
+	node0x1d771f0[label=";"]
+	node0x1d772b0[label="}"]
+	node0x1d60d50 -> node0x1d6a290;
+	node0x1d6a290 -> node0x1d6c1d0;
+	node0x1d6c1d0 -> node0x1d6c1a0;
+	node0x1d6c1d0 -> node0x1d6c280;
+	node0x1d6c1d0 -> node0x1d6c2c0;
+	node0x1d6c1d0 -> node0x1d6c350;
+	node0x1d6c1d0 -> node0x1d6c2f0;
+	node0x1d6c2f0 -> node0x1d6c860;
+	node0x1d6c2f0 -> node0x1d6cb30;
+	node0x1d6c2f0 -> node0x1d75a30;
+	node0x1d6c2f0 -> node0x1d772b0;
+	node0x1d6cb30 -> node0x1d6e700;
+	node0x1d6e700 -> node0x1d6ff70;
+	node0x1d6e700 -> node0x1d6ffd0;
+	node0x1d6e700 -> node0x1d70630;
+	node0x1d6e700 -> node0x1d6cd30;
+	node0x1d6e700 -> node0x1d73aa0;
+	node0x1d6cd30 -> node0x1d70670;
+	node0x1d75a30 -> node0x1d76060;
+	node0x1d76060 -> node0x1d714c0;
+	node0x1d76060 -> node0x1d75d40;
+	node0x1d76060 -> node0x1d771f0;
+	node0x1d75d40 -> node0x1d75d00;
+}

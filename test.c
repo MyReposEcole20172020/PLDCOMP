@@ -1,5 +1,5 @@
-char main(){
-    char a = getchar();
-	return a;
+int main(){
+    int a = 10;
+    return a;
 }
 

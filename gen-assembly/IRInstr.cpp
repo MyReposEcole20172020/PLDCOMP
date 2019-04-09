@@ -660,9 +660,9 @@ void WmemInstr::gen_asm(ostream &o) {
 		o << offset <<"(%rbp), %rax\n";	
 		offset = bb->get_cfg()->get_var_index(val);
 		o << "	movl  ";
-		o << offset <<"(%rbp), %r10\n";	
+		o << offset <<"(%rbp), %r10d\n";	
 		o << "	movl  ";
-		o << "%r10, (%rax)\n";	
+		o << "%r10d, (%rax)\n";	
 	}else if(t.getText() == "int64_t"){
 		o << "	movq  ";
 		o << offset <<"(%rbp), %rax\n";	
@@ -689,10 +689,10 @@ void RmemInstr::gen_asm(ostream &o) {
 		o << "	movq  ";
 		o << offset <<"(%rbp) " <<", %rax\n";
 		o << "	movl  ";	
-		o << "(%rax), %r10\n";	
+		o << "(%rax), %r10d\n";	
 		offset = bb->get_cfg()->get_var_index(dest);
 		o << "	movl  ";
-		o << "%r10, "<< offset <<"(%rbp)\n";	
+		o << "%r10d, "<< offset <<"(%rbp)\n";	
 	}else if(t.getText() == "int64_t"){
 		offset = bb->get_cfg()->get_var_index(ad);
 		o << "	movq  ";
