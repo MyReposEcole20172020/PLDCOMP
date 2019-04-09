@@ -5,12 +5,16 @@ using namespace std;
 
 enum ENUMTYPE{
     VOID,
-    INT,
     CHAR,
+    INT,
+	INT64_T,
+    CHARPOINTER,
+	INTPOINTER,
+	INT64_TPOINTER,
     UNKNOWN
 };
 
-const string typeLabel[4] = {"void","int","char","unknown"};
+const string typeLabel[] = {"void","char","int","int64_t","char*","int*","int64_t*","unknown"};
 
 /*Node which represents the type of variable or return*/
 
@@ -19,6 +23,9 @@ class Type{
       Type(string oneType);
       virtual ~Type(){}
       string getText();
+	  int getTypeValue(){
+		return (int)myType;
+	  }
     protected:
         ENUMTYPE myType;
 

@@ -3,12 +3,18 @@
 Type::Type(string oneType){
     if(oneType == "int"){
         myType = INT;
-    }
-    else if(oneType == "void"){
+    }else if(oneType == "void"){
         myType = VOID;
-    }
-    else if(oneType == "char"){
+    }else if(oneType == "char"){
         myType = CHAR;
+    }else if(oneType == "int64_t"){
+        myType = CHAR;
+    }else if(oneType == "int*"){
+        myType = INTPOINTER;
+    }else if(oneType == "char*"){
+        myType = CHARPOINTER;
+    }else if(oneType == "int64_t*"){
+        myType = CHARPOINTER;
     }else{
         myType = UNKNOWN;
     }
