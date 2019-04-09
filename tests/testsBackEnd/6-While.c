@@ -1,6 +1,5 @@
-#include<inttypes.h>
-void main(void){
-  int64_t i;
+void main(){
+  int i;
   i=0;
   
   while(i<5)  {
