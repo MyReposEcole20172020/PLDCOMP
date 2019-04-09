@@ -368,17 +368,26 @@ void CallInstr::gen_asm(ostream &o) {
 	if(params.size() > 6) {
 	    cout << "Error";
 	}
+    if(this->t.getText() == "char") {
+        o << "movq    $0, %rax\n";
+	}
 	for(int i =0; i<params.size(); ++i) {
 	    offset = bb->get_cfg()->get_var_index(params[i]);
-	    o << "        movq    ";
+	    o << "	movq    ";
 	    o << offset << "(%rbp), ";
 	    o << "%" << ParamRegister[i] << "\n";
 	}
-	o << "        call " << label << "@PLT" << "\n";
+	o << "	call " << label << "@PLT" << "\n";
 	if(dest != ""){
 	    offset = bb->get_cfg()->get_var_index(dest);
-	    o << "        movq    ";
-	    o << "%rax, ";
+	    if(this->t.getText() == "char") {
+	        o << "	movb    ";
+	        o << "%al, ";
+	    }
+	    else {
+	        o << "	movq    ";
+	        o << "%rax, ";
+	    }
 	    o << offset << "(%rbp)\n ";
 	}
 }

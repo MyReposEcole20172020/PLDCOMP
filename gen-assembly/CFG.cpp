@@ -57,16 +57,16 @@ string CFG::IR_reg_to_asm(string reg) {
 
 void CFG::gen_asm_prologue(ostream& o) {
 	string pro = ".PROLOG" + ast->getName() +" : \n";
-    pro += "    pushq   %rbp\n";
-    pro += "    movq    %rsp, %rbp\n";
-    pro += "    subq    $";
+    pro += "	pushq   %rbp\n";
+    pro += "	movq    %rsp, %rbp\n";
+    pro += "	subq    $";
     pro += to_string(nextFreeSymbolIndex+8);
     pro += ",   %rsp\n";
     if (ast->getParams() != nullptr) {
 	    for (int i = 0 ; i < ast->getParams()->getParameters().size(); i++)
 	    {
 	        int offset = get_var_index(ast->getParams()->getParameters()[i]->getName());
-	        pro += "    movq    %" + param_register[i] + ", " + to_string(offset) + "(%rbp) \n";
+	        pro += "	movq	%" + param_register[i] + ", " + to_string(offset) + "(%rbp) \n";
 	    }
 	}
 	o << pro << endl;
@@ -80,11 +80,11 @@ void CFG::gen_asm_epilogue(ostream& o) {
 	    epi += "	movq  ";
 	    epi += to_string(offset) + "(%rbp), %rax\n";
 	}
-    epi += "    addq    $";
+    epi += "	addq    $";
     epi += to_string(nextFreeSymbolIndex+8);
     epi += ",   %rsp\n";
-    epi += "    popq   %rbp\n";
-    epi += "    retq\n";
+    epi += "	popq   %rbp\n";
+    epi += "	retq\n";
 	o << epi;
 }
 
