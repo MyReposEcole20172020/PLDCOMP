@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <iostream>
 #include <fstream>
 #include "Type.h"
 using namespace std;
@@ -41,7 +42,7 @@ class Expr {
 		Type getType(){
 			return type;
 		}
-		//virtual void evalType() = 0;
+		virtual void evalType() = 0;
 		void setType(Type oneType){
 			type = oneType;
 		}
@@ -53,6 +54,7 @@ class ExprInt : public Expr {
     public:
 		ExprInt(int oneValue) : value(oneValue) { type=Type("int"); }
 		virtual ~ExprInt(){}
+		void evalType() {}
 		string buildIR(CFG * cfg);
     protected:
 		int value;
@@ -62,6 +64,7 @@ class ExprVar : public Expr {
     public:
 		ExprVar(string oneName) : myName(oneName) {type=Type("unknown"); }
 		virtual ~ExprVar(){}
+		void evalType() {}
 		string buildIR(CFG * cfg);
     protected:
 		string myName;
@@ -71,6 +74,7 @@ class ExprChar : public Expr {
     public:
 		ExprChar(char oneChar) : value(oneChar) {type=Type("char"); }
 		virtual ~ExprChar(){}
+		void evalType() {}
 		string buildIR(CFG * cfg);
     protected:
 		char value;
@@ -80,6 +84,15 @@ class ExprBinary : public Expr {
     public:
 		ExprBinary(OPTYPE oneType, Expr* oneOp1, Expr* oneOp2) : op1(oneOp1), op2(oneOp2){ myOp = new Operator(oneType); type=Type("unknown");}
 		virtual ~ExprBinary(){ delete op1; delete op2; delete myOp; }
+		void evalType() {
+			Type t1 = op1->getType();
+			Type t2 = op2->getType();
+			if(t1.getTypeValue() > t2.getTypeValue()){
+				type = t1;
+			}else{
+				type = t2;
+			}
+		}
 		string buildIR(CFG * cfg);
     protected:
 		Expr* op1;
@@ -89,8 +102,11 @@ class ExprBinary : public Expr {
 
 class ExprUnary : public Expr {
     public:
-		ExprUnary(OPTYPE oneType, Expr* oneOp) : op(oneOp){ myOp = new Operator(oneType); type=Type("int");}
+		ExprUnary(OPTYPE oneType, Expr* oneOp) : op(oneOp){ myOp = new Operator(oneType);}
 		virtual ~ExprUnary(){ delete op;delete myOp; }
+		void evalType() {
+			type = op->getType();		
+		}
 		string buildIR(CFG * cfg);
     protected:
 		Expr* op;
@@ -102,6 +118,7 @@ class ExprAssign : public Expr {
 		ExprAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
 		ExprAssign(Expr* elemLv, Expr* oneExpr ) : myExpr(oneExpr){ myVar = elemLv; type = Type("unknown");}
 		virtual ~ExprAssign(){delete myExpr; delete myVar;}
+		void evalType() {}
 		string buildIR(CFG * cfg);
 	protected:
 		Expr* myVar;
@@ -113,6 +130,7 @@ class ExprMultAssign : public Expr {
 		ExprMultAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
 		ExprMultAssign(Expr* elemLv, Expr* oneExpr ) : myExpr(oneExpr){ myVar = elemLv; type = Type("unknown");}
 		virtual ~ExprMultAssign(){delete myExpr; delete myVar;}
+		void evalType() {}
 		string buildIR(CFG * cfg);
 	protected:
 		Expr* myVar;
@@ -124,6 +142,7 @@ class ExprDivAssign : public Expr {
 		ExprDivAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
 		ExprDivAssign(Expr* elemLv, Expr* oneExpr ) : myExpr(oneExpr){ myVar = elemLv; type = Type("unknown");}
 		virtual ~ExprDivAssign(){delete myExpr; delete myVar;}
+		void evalType() {}
 		string buildIR(CFG * cfg);
 	protected:
 		Expr* myVar;
@@ -135,6 +154,7 @@ class ExprAddAssign : public Expr {
 		ExprAddAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
 		ExprAddAssign(Expr* elemLv, Expr* oneExpr ) : myExpr(oneExpr){ myVar = elemLv; type = Type("unknown");}
 		virtual ~ExprAddAssign(){delete myExpr; delete myVar;}
+		void evalType() {}
 		string buildIR(CFG * cfg);
 	protected:
 		Expr* myVar;
@@ -146,6 +166,7 @@ class ExprSubAssign : public Expr {
 		ExprSubAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
 		ExprSubAssign(Expr* elemLv, Expr* oneExpr ) : myExpr(oneExpr){ myVar = elemLv; type = Type("unknown");}
 		virtual ~ExprSubAssign(){delete myExpr; delete myVar;}
+		void evalType() {}
 		string buildIR(CFG * cfg);
 	protected:
 		Expr* myVar;
@@ -157,6 +178,7 @@ class ExprModAssign : public Expr {
 		ExprModAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
 		ExprModAssign(Expr* elemLv, Expr* oneExpr ) : myExpr(oneExpr){ myVar = elemLv; type = Type("unknown");}
 		virtual ~ExprModAssign(){delete myExpr; delete myVar;}
+		void evalType() {}
 		string buildIR(CFG * cfg);
 	protected:
 		Expr* myVar;
@@ -168,6 +190,7 @@ class ExprAndBinAssign : public Expr {
 		ExprAndBinAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
 		ExprAndBinAssign(Expr* elemLv, Expr* oneExpr ) : myExpr(oneExpr){ myVar = elemLv; type = Type("unknown");}
 		virtual ~ExprAndBinAssign(){delete myExpr; delete myVar;}
+		void evalType() {}
 		string buildIR(CFG * cfg);
 	protected:
 		Expr* myVar;
@@ -179,6 +202,7 @@ class ExprOuExBinAssign : public Expr {
 		ExprOuExBinAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
 		ExprOuExBinAssign(Expr* elemLv, Expr* oneExpr ) : myExpr(oneExpr){ myVar = elemLv; type = Type("unknown");}
 		virtual ~ExprOuExBinAssign(){delete myExpr; delete myVar;}
+		void evalType() {}
 		string buildIR(CFG * cfg);
 	protected:
 		Expr* myVar;
@@ -190,6 +214,7 @@ class ExprOuBinAssign : public Expr {
 		ExprOuBinAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
 		ExprOuBinAssign(Expr* elemLv, Expr* oneExpr ) : myExpr(oneExpr){ myVar = elemLv; type = Type("unknown");}
 		virtual ~ExprOuBinAssign(){delete myExpr; delete myVar;}
+		void evalType() {}
 		string buildIR(CFG * cfg);
 	protected:
 		Expr* myVar;
@@ -198,10 +223,11 @@ class ExprOuBinAssign : public Expr {
 
 class ExprSizeOf : public Expr {
     public:
-		ExprSizeOf(string oneType, string varName ) {type = Type("unknown"); myVar = new ExprVar(varName); evalType = oneType;}
+		ExprSizeOf(string oneType, string varName ) {type = Type("unknown"); myVar = new ExprVar(varName); evType = oneType;}
 		virtual ~ExprSizeOf(){delete myVar;}
+		void evalType() {}
 		string buildIR(CFG * cfg);
 	protected:
 		ExprVar* myVar;
-		string evalType; 
+		string evType; 
 };

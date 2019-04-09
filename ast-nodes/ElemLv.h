@@ -9,6 +9,7 @@ class ElemLv : public Expr{
 	public:
 		ElemLv(string oneName, Expr* oneExpr) : arrayName(oneName), myExpr(oneExpr) { type=Type("unknown"); }
 		virtual ~ElemLv();
+		void evalType() {}
 		/*Creates the correspondant IR instruction of this node in CFG*/
 		string buildIR(CFG* cfg);
       

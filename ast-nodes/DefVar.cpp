@@ -8,7 +8,7 @@ string DefVarWithDeclar::buildIR(CFG * cfg){
     //rvalue
     string right = myExpr->buildIR(cfg);
     //Get the address of the variable
-    Type typeInt("int");
+    Type typeInt("int64_t");
     string var = cfg->create_new_tempvar(typeInt);
     int offset = cfg->get_var_index(left);
     vector<string> params1;

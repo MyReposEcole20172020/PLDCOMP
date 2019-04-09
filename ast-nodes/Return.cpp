@@ -21,12 +21,12 @@ string Return::buildIR(CFG * cfg){
 			afterReturnBB->set_exit_false(beforeReturnBB->get_exit_false());
 			beforeReturnBB->set_exit_true(cfg->get_bb_epilog());
 			beforeReturnBB->set_exit_false(nullptr);
-			string left = cfg->create_new_tempvar(expr->getType());
+			string left = cfg->create_new_tempvar(Type("int64_t"));
 			int offset= cfg->get_var_index("retValue");
 			vector<string>params1={left,"-"+to_string(-offset)};
-			cfg->current_bb->add_IRInstr(IRInstr::ldconst,Type("int"),params1);
+			cfg->current_bb->add_IRInstr(IRInstr::ldconst,Type("int64_t"),params1);
 			vector<string>params2={left,"!bp",left};
-			cfg->current_bb->add_IRInstr(IRInstr::add,Type("int"),params2);
+			cfg->current_bb->add_IRInstr(IRInstr::add,Type("int64_t"),params2);
 			vector<string> params3={left,value};
 			cfg->current_bb->add_IRInstr(IRInstr::wmem,expr->getType(),params3);
 			cfg->current_bb = afterReturnBB;

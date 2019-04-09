@@ -89,6 +89,7 @@ param :  expr (',' expr)*;
 
 TYPE: 'int'
 	| 'char'
+	| 'int64_t'
 	;
 
 INT : [0-9]+ ;

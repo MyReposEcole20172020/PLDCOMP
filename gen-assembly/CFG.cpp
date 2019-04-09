@@ -77,8 +77,17 @@ void CFG::gen_asm_epilogue(ostream& o) {
     Type retType = get_var_type("retValue");
 	if(retType.getText() != "void"){
         int offset = get_var_index("retValue");
-	    epi += "	movq  ";
-	    epi += to_string(offset) + "(%rbp), %rax\n";
+        if(retType.getText() == "int64_t"){
+			epi += "	movq  ";
+			epi += to_string(offset) + "(%rbp), %rax\n";
+		}else if(retType.getText() == "int"){
+			epi += "	movl  ";
+			epi += to_string(offset) + "(%rbp), %eax\n";
+		}else if(retType.getText() == "char"){
+			epi += "	movb  ";
+			epi += to_string(offset) + "(%rbp), %al\n";
+			epi += "	movsbl	%al, %eax\n";
+		}
 	}
     epi += "	addq    $";
     epi += to_string(nextFreeSymbolIndex+8);
@@ -91,10 +100,12 @@ void CFG::gen_asm_epilogue(ostream& o) {
 // symbol table methods
 void CFG::add_to_symbol_table(string name, Type t, int tableSize) {
 	SymbolType.insert(make_pair(name,t));
-	if(t.getText() == "int" || t.getText() == "int*"  || t.getText() == "char*"){
+	if(t.getText() == "int64_t" || t.getText() == "int*"  || t.getText() == "char*"){
 		nextFreeSymbolIndex +=8;
+	}else if(t.getText() == "int"){
+		nextFreeSymbolIndex +=4;
 	}else if(t.getText() == "char"){
-		nextFreeSymbolIndex +=8;
+		nextFreeSymbolIndex +=4;
 	}
 	SymbolIndex.insert(make_pair(name,nextFreeSymbolIndex));
 	nextFreeSymbolIndex += tableSize;		
@@ -103,9 +114,11 @@ void CFG::add_to_symbol_table(string name, Type t, int tableSize) {
 string CFG::create_new_tempvar(Type t) {
 	string name;
 	if(t.getText() == "int"){
+		name = "!tmp" + to_string(nextFreeSymbolIndex+4);
+	}else if(t.getText() == "int64_t"){
 		name = "!tmp" + to_string(nextFreeSymbolIndex+8);
 	}else if(t.getText() == "char"){
-		name = "!tmp" + to_string(nextFreeSymbolIndex+8);
+		name = "!tmp" + to_string(nextFreeSymbolIndex+4);
 	}
 	add_to_symbol_table(name,t);
 	return name;
