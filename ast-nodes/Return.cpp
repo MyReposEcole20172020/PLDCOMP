@@ -10,6 +10,14 @@ string Return::buildIR(CFG * cfg){
 	if(returnType.getText() == "void"){
 		if(expr != nullptr){
 			cerr << "Erreur dans le retour void" << endl;
+		}else{
+			BasicBlock* beforeReturnBB = cfg->current_bb;
+			BasicBlock* afterReturnBB = new BasicBlock(cfg, cfg->new_BB_name());
+			cfg->add_bb(afterReturnBB);
+			afterReturnBB->set_exit_true(beforeReturnBB->get_exit_true());
+			afterReturnBB->set_exit_false(beforeReturnBB->get_exit_false());
+			beforeReturnBB->set_exit_true(cfg->get_bb_epilog());
+			beforeReturnBB->set_exit_false(nullptr);
 		}
 	}else{
 	    string value= expr->buildIR(cfg);

@@ -31,6 +31,7 @@ string ExprBinary::buildIR(CFG * cfg){
     string var1 = op1->buildIR(cfg);
     string var2 = op2->buildIR(cfg);
 	evalType();
+	cout << this->getType().getText() << endl;
 	if(cfg->get_var_type(var1).getText() != type.getText()){
 		string var = cfg->create_new_tempvar(this->getType());
 		Type typeInt("int64_t");
@@ -50,6 +51,7 @@ string ExprBinary::buildIR(CFG * cfg){
         params.push_back(var1);
         cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(var1),params);
 		var1 = var;
+		cout << "sdqsdqs" << endl;
 	}
 	if(cfg->get_var_type(var2).getText() != type.getText()){
 		string var = cfg->create_new_tempvar(this->getType());
@@ -67,9 +69,10 @@ string ExprBinary::buildIR(CFG * cfg){
         cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
 		vector<string> params;
         params.push_back(varTemp);
-        params.push_back(var1);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(var1),params);
-		var1 = var;
+        params.push_back(var2);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(var2),params);
+		var2 = var;
+		cout << "qsdsqdsqd"<< this->getType().getText() << endl;
 	}
     string var3 = cfg->create_new_tempvar(this->getType());
     vector<string> params;
@@ -141,7 +144,6 @@ string ExprBinary::buildIR(CFG * cfg){
             cfg->current_bb->add_IRInstr(IRInstr::cmp_le,this->getType(),params);
             break;
 		case LESSEQ:
-		    cout << "dqsdq" << endl;
 			params.push_back(var3);
             params.push_back(var1);
             params.push_back(var2);
@@ -241,15 +243,15 @@ string ExprUnary::buildIR(CFG * cfg){
 
 string ExprAssign::buildIR(CFG * cfg){
     //Declaration
-    cout << "qsdqsdqsdqsd" << endl;
     string left = myVar->buildIR(cfg);
 	Type typeLeft = cfg->get_var_type(left);
-	this->setType(typeLeft);
+	this->setType(myVar->getType());
     //rvalue
     string right = myExpr->buildIR(cfg);
+	
+	string returnValue;
     //Get the address of the variable
     if(dynamic_cast<ElemLv*>(myVar) == nullptr) {
-    	cout << "qsdqsd" << endl;
         Type typeInt("int64_t");
         string var = cfg->create_new_tempvar(typeInt);
         int offset = cfg->get_var_index(left);
@@ -267,28 +269,68 @@ string ExprAssign::buildIR(CFG * cfg){
         params3.push_back(var);//Here, we use the value in var
         params3.push_back(right);
         cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+		returnValue = left;
     }else{
         //Assignment
         vector<string> params3;
         params3.push_back(left);//Here, we use the value in var
         params3.push_back(right);
         cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+		
+		string valueReturn = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params6;
+        params6.push_back(valueReturn);
+        params6.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params6);
+		returnValue = valueReturn;
     }
-    return right;
+    return returnValue;
 }
 
 string ExprMultAssign::buildIR(CFG * cfg){
     //Declaration
     string left = myVar->buildIR(cfg);
-    this->setType(cfg->get_var_type(left));
+    this->setType(myVar->getType());
+	string returnValue;
     //rvalue
-    string right = myExpr->buildIR(cfg);
-	string var3;
-	Type* grandType = nullptr;
+    /*string right = myExpr->buildIR(cfg);
+	string var3;*/
+	//Type* grandType = nullptr;
     //Get the address of the variable
     if(dynamic_cast<ElemLv*>(myVar) == nullptr) {
-		if(myVar->getType().getTypeValue() > myExpr->getType().getTypeValue()){
-			grandType = new Type(myVar->getType().getText());
+		ExprBinary* exp = new ExprBinary(OPTYPE::MULT,myVar,myExpr);
+		string var3 = exp->buildIR(cfg);
+        Type typeInt("int64_t");
+        string var = cfg->create_new_tempvar(typeInt);
+        int offset = cfg->get_var_index(left);
+        vector<string> params1;
+        params1.push_back(var);
+        params1.push_back(to_string(offset));
+        vector<string> params2;
+        params2.push_back(var);
+        params2.push_back("!bp");
+        params2.push_back(var);
+        cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+        cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+        //Assignment
+        vector<string> params3;
+        params3.push_back(var);//Here, we use the value in var
+        params3.push_back(var3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+		returnValue = left;
+    }else{
+		string value = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params5;
+        params5.push_back(value);
+        params5.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params5);
+		string right = myExpr->buildIR(cfg);
+		string var3;
+		Type* grandType = nullptr; 
+		if(myVar->getType().getTypeValue() < myExpr->getType().getTypeValue()){
+			grandType = new Type(myExpr->getType().getText());
 			string var = cfg->create_new_tempvar(*grandType);
 			Type typeInt("int64_t");
 		    string varTemp = cfg->create_new_tempvar(typeInt);
@@ -304,8 +346,8 @@ string ExprMultAssign::buildIR(CFG * cfg){
 		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
 			vector<string> params3;
 		    params3.push_back(varTemp);
-		    params3.push_back(left);
-		    cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+		    params3.push_back(value);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
 			//Multiplication
 			var3 = cfg->create_new_tempvar(*grandType);
 			vector<string> params;
@@ -313,8 +355,8 @@ string ExprMultAssign::buildIR(CFG * cfg){
 			params.push_back(var);
 			params.push_back(right);
 			cfg->current_bb->add_IRInstr(IRInstr::mul,*grandType,params);
-		}else if(myVar->getType().getTypeValue() < myExpr->getType().getTypeValue()){
-			grandType = new Type(myExpr->getType().getText());
+		}else if(myVar->getType().getTypeValue() > myExpr->getType().getTypeValue()){
+			grandType = new Type(myVar->getType().getText());
 			string var = cfg->create_new_tempvar(*grandType);
 			Type typeInt("int64_t");
 		    string varTemp = cfg->create_new_tempvar(typeInt);
@@ -336,60 +378,49 @@ string ExprMultAssign::buildIR(CFG * cfg){
 			var3 = cfg->create_new_tempvar(*grandType);
 			vector<string> params;
 			params.push_back(var3);
-			params.push_back(left);
+			params.push_back(value);
 			params.push_back(var);
 			cfg->current_bb->add_IRInstr(IRInstr::mul,*grandType,params);
 		}else{
 			//Multiplication
-			var3 = cfg->create_new_tempvar(this->getType());
+			var3 = cfg->create_new_tempvar(myVar->getType());
+			cout <<  myVar->getType().getText() << "Table" << endl;
 			vector<string> params;
 			params.push_back(var3);
-			params.push_back(left);
+			params.push_back(value);
 			params.push_back(right);
-			cfg->current_bb->add_IRInstr(IRInstr::mul,cfg->get_var_type(left),params);
+			cfg->current_bb->add_IRInstr(IRInstr::mul,myVar->getType(),params);
 		}
-        Type typeInt("int64_t");
-        string var = cfg->create_new_tempvar(typeInt);
-        int offset = cfg->get_var_index(left);
-        vector<string> params1;
-        params1.push_back(var);
-        params1.push_back(to_string(offset));
-        vector<string> params2;
-        params2.push_back(var);
-        params2.push_back("!bp");
-        params2.push_back(var);
-        cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
-        cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
-        //Assignment
-        vector<string> params3;
-        params3.push_back(var);//Here, we use the value in var
-        params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
-    }else{
         //Assignment
         vector<string> params3;
         params3.push_back(left);//Here, we use the value in var
         params3.push_back(var3);
         cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+
+		string valueReturn = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params6;
+        params6.push_back(valueReturn);
+        params6.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params6);
+		returnValue = valueReturn;
     }
-    return right;
+    return returnValue;
 }
 
 string ExprDivAssign::buildIR(CFG * cfg){
-    //Declaration
+	//Declaration
     string left = myVar->buildIR(cfg);
-    this->setType(cfg->get_var_type(left));
+    this->setType(myVar->getType());
+	string returnValue;
     //rvalue
-    string right = myExpr->buildIR(cfg);
-    //Division
-    string var3 = cfg->create_new_tempvar(this->getType());
-    vector<string> params;
-    params.push_back(var3);
-    params.push_back(left);
-    params.push_back(right);
-    cfg->current_bb->add_IRInstr(IRInstr::div,this->getType(),params);
+    /*string right = myExpr->buildIR(cfg);
+	string var3;*/
+	//Type* grandType = nullptr;
     //Get the address of the variable
     if(dynamic_cast<ElemLv*>(myVar) == nullptr) {
+		ExprBinary* exp = new ExprBinary(OPTYPE::DIV,myVar,myExpr);
+		string var3 = exp->buildIR(cfg);
         Type typeInt("int64_t");
         string var = cfg->create_new_tempvar(typeInt);
         int offset = cfg->get_var_index(left);
@@ -406,32 +437,111 @@ string ExprDivAssign::buildIR(CFG * cfg){
         vector<string> params3;
         params3.push_back(var);//Here, we use the value in var
         params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+		returnValue = left;
     }else{
+		string value = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params5;
+        params5.push_back(value);
+        params5.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params5);
+		string right = myExpr->buildIR(cfg);
+		string var3;
+		Type* grandType = nullptr; 
+		if(myVar->getType().getTypeValue() < myExpr->getType().getTypeValue()){
+			grandType = new Type(myExpr->getType().getText());
+			string var = cfg->create_new_tempvar(*grandType);
+			Type typeInt("int64_t");
+		    string varTemp = cfg->create_new_tempvar(typeInt);
+		    int offset = cfg->get_var_index(var);
+		    vector<string> params1;
+		    params1.push_back(varTemp);
+		    params1.push_back(to_string(offset));
+		    vector<string> params2;
+		    params2.push_back(varTemp);
+		    params2.push_back("!bp");
+		    params2.push_back(varTemp);
+		    cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+			vector<string> params3;
+		    params3.push_back(varTemp);
+		    params3.push_back(value);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+			//Multiplication
+			var3 = cfg->create_new_tempvar(*grandType);
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(var);
+			params.push_back(right);
+			cfg->current_bb->add_IRInstr(IRInstr::div,*grandType,params);
+		}else if(myVar->getType().getTypeValue() > myExpr->getType().getTypeValue()){
+			grandType = new Type(myVar->getType().getText());
+			string var = cfg->create_new_tempvar(*grandType);
+			Type typeInt("int64_t");
+		    string varTemp = cfg->create_new_tempvar(typeInt);
+		    int offset = cfg->get_var_index(var);
+		    vector<string> params1;
+		    params1.push_back(varTemp);
+		    params1.push_back(to_string(offset));
+		    vector<string> params2;
+		    params2.push_back(varTemp);
+		    params2.push_back("!bp");
+		    params2.push_back(varTemp);
+		    cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+			vector<string> params3;
+		    params3.push_back(varTemp);
+		    params3.push_back(right);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(right),params3);
+			//Multiplication
+			var3 = cfg->create_new_tempvar(*grandType);
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(value);
+			params.push_back(var);
+			cfg->current_bb->add_IRInstr(IRInstr::div,*grandType,params);
+		}else{
+			//Multiplication
+			var3 = cfg->create_new_tempvar(myVar->getType());
+			cout <<  myVar->getType().getText() << "Table" << endl;
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(value);
+			params.push_back(right);
+			cfg->current_bb->add_IRInstr(IRInstr::div,myVar->getType(),params);
+		}
         //Assignment
         vector<string> params3;
         params3.push_back(left);//Here, we use the value in var
         params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+
+		string valueReturn = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params6;
+        params6.push_back(valueReturn);
+        params6.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params6);
+		returnValue = valueReturn;
     }
-    return right;
+    return returnValue;
+	
 }
 
 string ExprAddAssign::buildIR(CFG * cfg){
-    //Declaration
+	//Declaration
     string left = myVar->buildIR(cfg);
-    this->setType(cfg->get_var_type(left));
+    this->setType(myVar->getType());
+	string returnValue;
     //rvalue
-    string right = myExpr->buildIR(cfg);
-    //Addition
-    string var3 = cfg->create_new_tempvar(this->getType());
-    vector<string> params;
-    params.push_back(var3);
-    params.push_back(left);
-    params.push_back(right);
-    cfg->current_bb->add_IRInstr(IRInstr::add,this->getType(),params);
+    /*string right = myExpr->buildIR(cfg);
+	string var3;*/
+	//Type* grandType = nullptr;
     //Get the address of the variable
     if(dynamic_cast<ElemLv*>(myVar) == nullptr) {
+		ExprBinary* exp = new ExprBinary(OPTYPE::ADD,myVar,myExpr);
+		string var3 = exp->buildIR(cfg);
         Type typeInt("int64_t");
         string var = cfg->create_new_tempvar(typeInt);
         int offset = cfg->get_var_index(left);
@@ -448,32 +558,110 @@ string ExprAddAssign::buildIR(CFG * cfg){
         vector<string> params3;
         params3.push_back(var);//Here, we use the value in var
         params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+		returnValue = left;
     }else{
+		string value = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params5;
+        params5.push_back(value);
+        params5.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params5);
+		string right = myExpr->buildIR(cfg);
+		string var3;
+		Type* grandType = nullptr; 
+		if(myVar->getType().getTypeValue() < myExpr->getType().getTypeValue()){
+			grandType = new Type(myExpr->getType().getText());
+			string var = cfg->create_new_tempvar(*grandType);
+			Type typeInt("int64_t");
+		    string varTemp = cfg->create_new_tempvar(typeInt);
+		    int offset = cfg->get_var_index(var);
+		    vector<string> params1;
+		    params1.push_back(varTemp);
+		    params1.push_back(to_string(offset));
+		    vector<string> params2;
+		    params2.push_back(varTemp);
+		    params2.push_back("!bp");
+		    params2.push_back(varTemp);
+		    cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+			vector<string> params3;
+		    params3.push_back(varTemp);
+		    params3.push_back(value);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+			//Multiplication
+			var3 = cfg->create_new_tempvar(*grandType);
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(var);
+			params.push_back(right);
+			cfg->current_bb->add_IRInstr(IRInstr::add,*grandType,params);
+		}else if(myVar->getType().getTypeValue() > myExpr->getType().getTypeValue()){
+			grandType = new Type(myVar->getType().getText());
+			string var = cfg->create_new_tempvar(*grandType);
+			Type typeInt("int64_t");
+		    string varTemp = cfg->create_new_tempvar(typeInt);
+		    int offset = cfg->get_var_index(var);
+		    vector<string> params1;
+		    params1.push_back(varTemp);
+		    params1.push_back(to_string(offset));
+		    vector<string> params2;
+		    params2.push_back(varTemp);
+		    params2.push_back("!bp");
+		    params2.push_back(varTemp);
+		    cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+			vector<string> params3;
+		    params3.push_back(varTemp);
+		    params3.push_back(right);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(right),params3);
+			//Multiplication
+			var3 = cfg->create_new_tempvar(*grandType);
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(value);
+			params.push_back(var);
+			cfg->current_bb->add_IRInstr(IRInstr::add,*grandType,params);
+		}else{
+			//Multiplication
+			var3 = cfg->create_new_tempvar(myVar->getType());
+			cout <<  myVar->getType().getText() << "Table" << endl;
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(value);
+			params.push_back(right);
+			cfg->current_bb->add_IRInstr(IRInstr::add,myVar->getType(),params);
+		}
         //Assignment
         vector<string> params3;
         params3.push_back(left);//Here, we use the value in var
         params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+
+		string valueReturn = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params6;
+        params6.push_back(valueReturn);
+        params6.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params6);
+		returnValue = valueReturn;
     }
-    return right;
+    return returnValue;
 }
 
 string ExprSubAssign::buildIR(CFG * cfg){
-    //Declaration
+	//Declaration
     string left = myVar->buildIR(cfg);
-    this->setType(cfg->get_var_type(left));
+    this->setType(myVar->getType());
+	string returnValue;
     //rvalue
-    string right = myExpr->buildIR(cfg);
-    //Subtraction
-    string var3 = cfg->create_new_tempvar(this->getType());
-    vector<string> params;
-    params.push_back(var3);
-    params.push_back(left);
-    params.push_back(right);
-    cfg->current_bb->add_IRInstr(IRInstr::sub,this->getType(),params);
+    /*string right = myExpr->buildIR(cfg);
+	string var3;*/
+	//Type* grandType = nullptr;
     //Get the address of the variable
     if(dynamic_cast<ElemLv*>(myVar) == nullptr) {
+		ExprBinary* exp = new ExprBinary(OPTYPE::SUB,myVar,myExpr);
+		string var3 = exp->buildIR(cfg);
         Type typeInt("int64_t");
         string var = cfg->create_new_tempvar(typeInt);
         int offset = cfg->get_var_index(left);
@@ -490,32 +678,111 @@ string ExprSubAssign::buildIR(CFG * cfg){
         vector<string> params3;
         params3.push_back(var);//Here, we use the value in var
         params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+		returnValue = left;
     }else{
+		string value = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params5;
+        params5.push_back(value);
+        params5.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params5);
+		string right = myExpr->buildIR(cfg);
+		string var3;
+		Type* grandType = nullptr; 
+		if(myVar->getType().getTypeValue() < myExpr->getType().getTypeValue()){
+			grandType = new Type(myExpr->getType().getText());
+			string var = cfg->create_new_tempvar(*grandType);
+			Type typeInt("int64_t");
+		    string varTemp = cfg->create_new_tempvar(typeInt);
+		    int offset = cfg->get_var_index(var);
+		    vector<string> params1;
+		    params1.push_back(varTemp);
+		    params1.push_back(to_string(offset));
+		    vector<string> params2;
+		    params2.push_back(varTemp);
+		    params2.push_back("!bp");
+		    params2.push_back(varTemp);
+		    cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+			vector<string> params3;
+		    params3.push_back(varTemp);
+		    params3.push_back(value);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+			//Multiplication
+			var3 = cfg->create_new_tempvar(*grandType);
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(var);
+			params.push_back(right);
+			cfg->current_bb->add_IRInstr(IRInstr::sub,*grandType,params);
+		}else if(myVar->getType().getTypeValue() > myExpr->getType().getTypeValue()){
+			grandType = new Type(myVar->getType().getText());
+			string var = cfg->create_new_tempvar(*grandType);
+			Type typeInt("int64_t");
+		    string varTemp = cfg->create_new_tempvar(typeInt);
+		    int offset = cfg->get_var_index(var);
+		    vector<string> params1;
+		    params1.push_back(varTemp);
+		    params1.push_back(to_string(offset));
+		    vector<string> params2;
+		    params2.push_back(varTemp);
+		    params2.push_back("!bp");
+		    params2.push_back(varTemp);
+		    cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+			vector<string> params3;
+		    params3.push_back(varTemp);
+		    params3.push_back(right);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(right),params3);
+			//Multiplication
+			var3 = cfg->create_new_tempvar(*grandType);
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(value);
+			params.push_back(var);
+			cfg->current_bb->add_IRInstr(IRInstr::sub,*grandType,params);
+		}else{
+			//Multiplication
+			var3 = cfg->create_new_tempvar(myVar->getType());
+			cout <<  myVar->getType().getText() << "Table" << endl;
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(value);
+			params.push_back(right);
+			cfg->current_bb->add_IRInstr(IRInstr::sub,myVar->getType(),params);
+		}
         //Assignment
         vector<string> params3;
         params3.push_back(left);//Here, we use the value in var
         params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+
+		string valueReturn = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params6;
+        params6.push_back(valueReturn);
+        params6.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params6);
+		returnValue = valueReturn;
     }
-    return right;
+    return returnValue;
+	
 }
 
 string ExprModAssign::buildIR(CFG * cfg){
     //Declaration
     string left = myVar->buildIR(cfg);
-    this->setType(cfg->get_var_type(left));
+    this->setType(myVar->getType());
+	string returnValue;
     //rvalue
-    string right = myExpr->buildIR(cfg);
-    //Subtraction
-    string var3 = cfg->create_new_tempvar(this->getType());
-    vector<string> params;
-    params.push_back(var3);
-    params.push_back(left);
-    params.push_back(right);
-    cfg->current_bb->add_IRInstr(IRInstr::mod,this->getType(),params);
+    /*string right = myExpr->buildIR(cfg);
+	string var3;*/
+	//Type* grandType = nullptr;
     //Get the address of the variable
     if(dynamic_cast<ElemLv*>(myVar) == nullptr) {
+		ExprBinary* exp = new ExprBinary(OPTYPE::MOD,myVar,myExpr);
+		string var3 = exp->buildIR(cfg);
         Type typeInt("int64_t");
         string var = cfg->create_new_tempvar(typeInt);
         int offset = cfg->get_var_index(left);
@@ -532,32 +799,110 @@ string ExprModAssign::buildIR(CFG * cfg){
         vector<string> params3;
         params3.push_back(var);//Here, we use the value in var
         params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+		returnValue = left;
     }else{
+		string value = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params5;
+        params5.push_back(value);
+        params5.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params5);
+		string right = myExpr->buildIR(cfg);
+		string var3;
+		Type* grandType = nullptr; 
+		if(myVar->getType().getTypeValue() < myExpr->getType().getTypeValue()){
+			grandType = new Type(myExpr->getType().getText());
+			string var = cfg->create_new_tempvar(*grandType);
+			Type typeInt("int64_t");
+		    string varTemp = cfg->create_new_tempvar(typeInt);
+		    int offset = cfg->get_var_index(var);
+		    vector<string> params1;
+		    params1.push_back(varTemp);
+		    params1.push_back(to_string(offset));
+		    vector<string> params2;
+		    params2.push_back(varTemp);
+		    params2.push_back("!bp");
+		    params2.push_back(varTemp);
+		    cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+			vector<string> params3;
+		    params3.push_back(varTemp);
+		    params3.push_back(value);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+			//Multiplication
+			var3 = cfg->create_new_tempvar(*grandType);
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(var);
+			params.push_back(right);
+			cfg->current_bb->add_IRInstr(IRInstr::mod,*grandType,params);
+		}else if(myVar->getType().getTypeValue() > myExpr->getType().getTypeValue()){
+			grandType = new Type(myVar->getType().getText());
+			string var = cfg->create_new_tempvar(*grandType);
+			Type typeInt("int64_t");
+		    string varTemp = cfg->create_new_tempvar(typeInt);
+		    int offset = cfg->get_var_index(var);
+		    vector<string> params1;
+		    params1.push_back(varTemp);
+		    params1.push_back(to_string(offset));
+		    vector<string> params2;
+		    params2.push_back(varTemp);
+		    params2.push_back("!bp");
+		    params2.push_back(varTemp);
+		    cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+			vector<string> params3;
+		    params3.push_back(varTemp);
+		    params3.push_back(right);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(right),params3);
+			//Multiplication
+			var3 = cfg->create_new_tempvar(*grandType);
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(value);
+			params.push_back(var);
+			cfg->current_bb->add_IRInstr(IRInstr::mod,*grandType,params);
+		}else{
+			//Multiplication
+			var3 = cfg->create_new_tempvar(myVar->getType());
+			cout <<  myVar->getType().getText() << "Table" << endl;
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(value);
+			params.push_back(right);
+			cfg->current_bb->add_IRInstr(IRInstr::mod,myVar->getType(),params);
+		}
         //Assignment
         vector<string> params3;
         params3.push_back(left);//Here, we use the value in var
         params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+
+		string valueReturn = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params6;
+        params6.push_back(valueReturn);
+        params6.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params6);
+		returnValue = valueReturn;
     }
-    return right;
+    return returnValue;
 }
 
 string ExprAndBinAssign::buildIR(CFG * cfg){
-    //Declaration
+	//Declaration
     string left = myVar->buildIR(cfg);
-    this->setType(cfg->get_var_type(left));
+    this->setType(myVar->getType());
+	string returnValue;
     //rvalue
-    string right = myExpr->buildIR(cfg);
-    //Subtraction
-    string var3 = cfg->create_new_tempvar(this->getType());
-    vector<string> params;
-    params.push_back(var3);
-    params.push_back(left);
-    params.push_back(right);
-    cfg->current_bb->add_IRInstr(IRInstr::and_bin,this->getType(),params);
+    /*string right = myExpr->buildIR(cfg);
+	string var3;*/
+	//Type* grandType = nullptr;
     //Get the address of the variable
     if(dynamic_cast<ElemLv*>(myVar) == nullptr) {
+		ExprBinary* exp = new ExprBinary(OPTYPE::ANDBIN,myVar,myExpr);
+		string var3 = exp->buildIR(cfg);
         Type typeInt("int64_t");
         string var = cfg->create_new_tempvar(typeInt);
         int offset = cfg->get_var_index(left);
@@ -574,32 +919,111 @@ string ExprAndBinAssign::buildIR(CFG * cfg){
         vector<string> params3;
         params3.push_back(var);//Here, we use the value in var
         params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+		returnValue = left;
     }else{
+		string value = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params5;
+        params5.push_back(value);
+        params5.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params5);
+		string right = myExpr->buildIR(cfg);
+		string var3;
+		Type* grandType = nullptr; 
+		if(myVar->getType().getTypeValue() < myExpr->getType().getTypeValue()){
+			grandType = new Type(myExpr->getType().getText());
+			string var = cfg->create_new_tempvar(*grandType);
+			Type typeInt("int64_t");
+		    string varTemp = cfg->create_new_tempvar(typeInt);
+		    int offset = cfg->get_var_index(var);
+		    vector<string> params1;
+		    params1.push_back(varTemp);
+		    params1.push_back(to_string(offset));
+		    vector<string> params2;
+		    params2.push_back(varTemp);
+		    params2.push_back("!bp");
+		    params2.push_back(varTemp);
+		    cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+			vector<string> params3;
+		    params3.push_back(varTemp);
+		    params3.push_back(value);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+			//Multiplication
+			var3 = cfg->create_new_tempvar(*grandType);
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(var);
+			params.push_back(right);
+			cfg->current_bb->add_IRInstr(IRInstr::and_bin,*grandType,params);
+		}else if(myVar->getType().getTypeValue() > myExpr->getType().getTypeValue()){
+			grandType = new Type(myVar->getType().getText());
+			string var = cfg->create_new_tempvar(*grandType);
+			Type typeInt("int64_t");
+		    string varTemp = cfg->create_new_tempvar(typeInt);
+		    int offset = cfg->get_var_index(var);
+		    vector<string> params1;
+		    params1.push_back(varTemp);
+		    params1.push_back(to_string(offset));
+		    vector<string> params2;
+		    params2.push_back(varTemp);
+		    params2.push_back("!bp");
+		    params2.push_back(varTemp);
+		    cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+			vector<string> params3;
+		    params3.push_back(varTemp);
+		    params3.push_back(right);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(right),params3);
+			//Multiplication
+			var3 = cfg->create_new_tempvar(*grandType);
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(value);
+			params.push_back(var);
+			cfg->current_bb->add_IRInstr(IRInstr::and_bin,*grandType,params);
+		}else{
+			//Multiplication
+			var3 = cfg->create_new_tempvar(myVar->getType());
+			cout <<  myVar->getType().getText() << "Table" << endl;
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(value);
+			params.push_back(right);
+			cfg->current_bb->add_IRInstr(IRInstr::and_bin,myVar->getType(),params);
+		}
         //Assignment
         vector<string> params3;
         params3.push_back(left);//Here, we use the value in var
         params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+
+		string valueReturn = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params6;
+        params6.push_back(valueReturn);
+        params6.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params6);
+		returnValue = valueReturn;
     }
-    return right;
+    return returnValue;
+	
 }
 
 string ExprOuExBinAssign::buildIR(CFG * cfg){
-    //Declaration
+	//Declaration
     string left = myVar->buildIR(cfg);
-    this->setType(cfg->get_var_type(left));
+    this->setType(myVar->getType());
+	string returnValue;
     //rvalue
-    string right = myExpr->buildIR(cfg);
-    //Subtraction
-    string var3 = cfg->create_new_tempvar(this->getType());
-    vector<string> params;
-    params.push_back(var3);
-    params.push_back(left);
-    params.push_back(right);
-    cfg->current_bb->add_IRInstr(IRInstr::ou_ex_bin,this->getType(),params);
+    /*string right = myExpr->buildIR(cfg);
+	string var3;*/
+	//Type* grandType = nullptr;
     //Get the address of the variable
     if(dynamic_cast<ElemLv*>(myVar) == nullptr) {
+		ExprBinary* exp = new ExprBinary(OPTYPE::OUEXBIN,myVar,myExpr);
+		string var3 = exp->buildIR(cfg);
         Type typeInt("int64_t");
         string var = cfg->create_new_tempvar(typeInt);
         int offset = cfg->get_var_index(left);
@@ -616,32 +1040,112 @@ string ExprOuExBinAssign::buildIR(CFG * cfg){
         vector<string> params3;
         params3.push_back(var);//Here, we use the value in var
         params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+		returnValue = left;
     }else{
+		string value = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params5;
+        params5.push_back(value);
+        params5.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params5);
+		string right = myExpr->buildIR(cfg);
+		string var3;
+		Type* grandType = nullptr; 
+		if(myVar->getType().getTypeValue() < myExpr->getType().getTypeValue()){
+			grandType = new Type(myExpr->getType().getText());
+			string var = cfg->create_new_tempvar(*grandType);
+			Type typeInt("int64_t");
+		    string varTemp = cfg->create_new_tempvar(typeInt);
+		    int offset = cfg->get_var_index(var);
+		    vector<string> params1;
+		    params1.push_back(varTemp);
+		    params1.push_back(to_string(offset));
+		    vector<string> params2;
+		    params2.push_back(varTemp);
+		    params2.push_back("!bp");
+		    params2.push_back(varTemp);
+		    cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+			vector<string> params3;
+		    params3.push_back(varTemp);
+		    params3.push_back(value);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+			//Multiplication
+			var3 = cfg->create_new_tempvar(*grandType);
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(var);
+			params.push_back(right);
+			cfg->current_bb->add_IRInstr(IRInstr::ou_ex_bin,*grandType,params);
+		}else if(myVar->getType().getTypeValue() > myExpr->getType().getTypeValue()){
+			grandType = new Type(myVar->getType().getText());
+			string var = cfg->create_new_tempvar(*grandType);
+			Type typeInt("int64_t");
+		    string varTemp = cfg->create_new_tempvar(typeInt);
+		    int offset = cfg->get_var_index(var);
+		    vector<string> params1;
+		    params1.push_back(varTemp);
+		    params1.push_back(to_string(offset));
+		    vector<string> params2;
+		    params2.push_back(varTemp);
+		    params2.push_back("!bp");
+		    params2.push_back(varTemp);
+		    cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+			vector<string> params3;
+		    params3.push_back(varTemp);
+		    params3.push_back(right);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(right),params3);
+			//Multiplication
+			var3 = cfg->create_new_tempvar(*grandType);
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(value);
+			params.push_back(var);
+			cfg->current_bb->add_IRInstr(IRInstr::ou_ex_bin,*grandType,params);
+		}else{
+			//Multiplication
+			var3 = cfg->create_new_tempvar(myVar->getType());
+			cout <<  myVar->getType().getText() << "Table" << endl;
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(value);
+			params.push_back(right);
+			cfg->current_bb->add_IRInstr(IRInstr::ou_ex_bin,myVar->getType(),params);
+		}
         //Assignment
         vector<string> params3;
         params3.push_back(left);//Here, we use the value in var
         params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+
+		string valueReturn = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params6;
+        params6.push_back(valueReturn);
+        params6.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params6);
+		returnValue = valueReturn;
     }
-    return right;
+    return returnValue;
+
+    
 }
 
 string ExprOuBinAssign::buildIR(CFG * cfg){
-    //Declaration
+	//Declaration
     string left = myVar->buildIR(cfg);
-    this->setType(cfg->get_var_type(left));
+    this->setType(myVar->getType());
+	string returnValue;
     //rvalue
-    string right = myExpr->buildIR(cfg);
-    //Subtraction
-    string var3 = cfg->create_new_tempvar(this->getType());
-    vector<string> params;
-    params.push_back(var3);
-    params.push_back(left);
-    params.push_back(right);
-    cfg->current_bb->add_IRInstr(IRInstr::ou_bin,this->getType(),params);
+    /*string right = myExpr->buildIR(cfg);
+	string var3;*/
+	//Type* grandType = nullptr;
     //Get the address of the variable
     if(dynamic_cast<ElemLv*>(myVar) == nullptr) {
+		ExprBinary* exp = new ExprBinary(OPTYPE::OUBIN,myVar,myExpr);
+		string var3 = exp->buildIR(cfg);
         Type typeInt("int64_t");
         string var = cfg->create_new_tempvar(typeInt);
         int offset = cfg->get_var_index(left);
@@ -658,15 +1162,96 @@ string ExprOuBinAssign::buildIR(CFG * cfg){
         vector<string> params3;
         params3.push_back(var);//Here, we use the value in var
         params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+		returnValue = left;
     }else{
+		string value = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params5;
+        params5.push_back(value);
+        params5.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params5);
+		string right = myExpr->buildIR(cfg);
+		string var3;
+		Type* grandType = nullptr; 
+		if(myVar->getType().getTypeValue() < myExpr->getType().getTypeValue()){
+			grandType = new Type(myExpr->getType().getText());
+			string var = cfg->create_new_tempvar(*grandType);
+			Type typeInt("int64_t");
+		    string varTemp = cfg->create_new_tempvar(typeInt);
+		    int offset = cfg->get_var_index(var);
+		    vector<string> params1;
+		    params1.push_back(varTemp);
+		    params1.push_back(to_string(offset));
+		    vector<string> params2;
+		    params2.push_back(varTemp);
+		    params2.push_back("!bp");
+		    params2.push_back(varTemp);
+		    cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+			vector<string> params3;
+		    params3.push_back(varTemp);
+		    params3.push_back(value);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+			//Multiplication
+			var3 = cfg->create_new_tempvar(*grandType);
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(var);
+			params.push_back(right);
+			cfg->current_bb->add_IRInstr(IRInstr::ou_bin,*grandType,params);
+		}else if(myVar->getType().getTypeValue() > myExpr->getType().getTypeValue()){
+			grandType = new Type(myVar->getType().getText());
+			string var = cfg->create_new_tempvar(*grandType);
+			Type typeInt("int64_t");
+		    string varTemp = cfg->create_new_tempvar(typeInt);
+		    int offset = cfg->get_var_index(var);
+		    vector<string> params1;
+		    params1.push_back(varTemp);
+		    params1.push_back(to_string(offset));
+		    vector<string> params2;
+		    params2.push_back(varTemp);
+		    params2.push_back("!bp");
+		    params2.push_back(varTemp);
+		    cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params1);
+		    cfg->current_bb->add_IRInstr(IRInstr::add,typeInt,params2);
+			vector<string> params3;
+		    params3.push_back(varTemp);
+		    params3.push_back(right);
+		    cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(right),params3);
+			//Multiplication
+			var3 = cfg->create_new_tempvar(*grandType);
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(value);
+			params.push_back(var);
+			cfg->current_bb->add_IRInstr(IRInstr::ou_bin,*grandType,params);
+		}else{
+			//Multiplication
+			var3 = cfg->create_new_tempvar(myVar->getType());
+			cout <<  myVar->getType().getText() << "Table" << endl;
+			vector<string> params;
+			params.push_back(var3);
+			params.push_back(value);
+			params.push_back(right);
+			cfg->current_bb->add_IRInstr(IRInstr::ou_bin,myVar->getType(),params);
+		}
         //Assignment
         vector<string> params3;
         params3.push_back(left);//Here, we use the value in var
         params3.push_back(var3);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,myVar->getType(),params3);
+
+		string valueReturn = cfg->create_new_tempvar(myVar->getType());
+		cout <<  myVar->getType().getText() << "Table" << endl;
+		vector<string> params6;
+        params6.push_back(valueReturn);
+        params6.push_back(left);
+        cfg->current_bb->add_IRInstr(IRInstr::rmem,myVar->getType(),params6);
+		returnValue = valueReturn;
     }
-    return right;
+    return returnValue;
+
 }
 
 string ExprSizeOf::buildIR(CFG * cfg){
@@ -675,9 +1260,11 @@ string ExprSizeOf::buildIR(CFG * cfg){
     if(evType != ""){
 	int size;
 	if(evType == "int"){
-	    size = 8;
+	    size = 4;
 	}else if(evType == "char"){
 	    size = 1;
+	}else if(evType == "int64_t"){
+	    size = 8;
 	}
 	vector<string> params;
 	params.push_back(var);
