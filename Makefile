@@ -8,22 +8,23 @@ clean:
 	rm -rf MainBaseVisitor.* MainLexer.* MainParser.* MainVisitor.* *.dot *.pdf *.interp *.tokens *.exe *.s *.o *.out
 
 build:
-	./Main.exe $(folderC)/$(file).c $(file) $(folderC) $(folderO) $(folderOutput)
-	as -o $(folderO)/$(file).o $(folderO)/$(file).s
-	gcc $(folderO)/$(file).o -o $(folderO)/$(file).out
+	@./Main.exe $(folderC)/$(file).c $(file) $(folderC) $(folderO) $(folderOutput)
+	@as -o $(folderO)/$(file).o $(folderO)/$(file).s
+	@gcc $(folderO)/$(file).o -o $(folderO)/$(file).out
 
 BackEnd:
 	
-	mkdir -p ./tests/testsBackEnd/results
-	mkdir -p $(folderOutput)
-	./Main.exe $(folderC)/$(file).c $(file) $(folderC) $(folderO) $(folderOutput)
-	as -o $(folderO)/$(file).o $(folderO)/$(file).s
+	@mkdir -p ./tests/testsBackEnd/results
+	@mkdir -p $(folderOutput)
+	@./Main.exe $(folderC)/$(file).c $(file) $(folderC) $(folderO) $(folderOutput)
+	@as -o $(folderO)/$(file).o $(folderO)/$(file).s
 	gcc $(folderO)/$(file).o -o $(folderO)/$(file).out2
 BackClean:
 	rm -rf ./tests/testsBackEnd/results
 FrontEnd:
-	mkdir -p $(folderC)/results/$(file) 
-	./Main.exe $(folderC)/$(file).c $(file) $(folderC) $(folderO) $(folderOutput)
-	as -o $(folderO)/$(file).o $(folderO)/$(file).s
+	@mkdir -p $(folderC)/results/$(file) 
+	@./Main.exe $(folderC)/$(file).c $(file) $(folderC) $(folderO) $(folderOutput)
+FrontEndAS:
+	@as -o $(folderO)/$(file).o $(folderO)/$(file).s
 FrontClean:
 	rm -rf ./tests/testsFrontEnd/ValidPrograms/results ./tests/testsFrontEnd/SyntaxError/results ./tests/testsFrontEnd/SemanticError/results ./tests/testsFrontEnd/LexError/results
