@@ -3,10 +3,11 @@ import os
 import filecmp
 from os.path import basename
 
-def generate_tr(filename,result,error):
+def generate_tr(filename,result):
 	if result=="failed":
-		return'<tr><td>%s</td><td style="color:red">%s</td><td style="color:red">%s</td></tr>'%(filename,result,error)
-	return'<tr><td>%s</td><td style="color:green">%s</td><td style="color:green">%s</td></tr>'%(filename,result,error)
+		return'<tr><td>%s</td><td style="color:red">%s</td></tr>'%(filename,result)
+	else:
+		return'<tr><td>%s</td><td style="color:green">%s</td></tr>'%(filename,result)
 
 def writeIn(filename,contents):
 	f=open(filename,"w+")
@@ -29,8 +30,7 @@ def writeTexte(file,nomOut,nomOutTexte,nomReturnTexte):
 	try:
 		print(str(file)+"."+nomOut)
 		ret=subprocess.call(cmdOut)
-		print()
-		print()
+		print("")
 		fileReturn=cheminOutput+str(file)+"_"+nomReturnTexte+".txt"
 		writeIn(fileReturn,ret)
 	except subprocess.CalledProcessError as e:
@@ -39,18 +39,20 @@ def writeTexte(file,nomOut,nomOutTexte,nomReturnTexte):
 		pass	
 def execution1(file,filename):
 	os.system("mkdir -p ./tests/testsBackEnd/results/"+str(file)+"/out")
-	obj=subprocess.Popen(["gcc","-w","./tests/testsBackEnd/"+str(filename), "-o","./tests/testsBackEnd/results/"+str(file)+"/"+str(file)+".out1"],stdout=subprocess.PIPE,
-stderr=subprocess.STDOUT,universal_newlines=True)
-	out_error_list=obj.communicate()[0]
+	obj=subprocess.Popen(["gcc","-w","./tests/testsBackEnd/"+str(filename), "-o","./tests/testsBackEnd/results/"+str(file)+"/"+str(file)+".out1"],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True)
+	error=obj.communicate()[0]
 	writeTexte(file,"out1","output1","return1")
-	return out_error_list
+	return error
 	pass
 def execution2(file,filename):
-	obj=subprocess.Popen(["make","testsBackEnd","file="+str(file)],stdout=subprocess.PIPE,
-stderr=subprocess.STDOUT,universal_newlines=True)
-	out_error_list=obj.communicate()[0]
+	folderC="./tests/testsBackEnd"
+	folderO="./tests/testsBackEnd/results/"+str(file)
+	folderOutput="./tests/testsBackEnd/results/"+str(file)+"/out"
+	obj=subprocess.Popen(["make","BackEnd","file="+str(file),"folderC="+str(folderC),"folderO="+str(folderO),"folderOutput="+str(folderOutput)],
+stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True)
+	error=obj.communicate()[0]
 	writeTexte(file,"out2","output2","return2")
-	return out_error_list
+	return error
 	pass
 def compare(file):
 	chemin="./tests/testsBackEnd/results/"+str(file)+"/out/"
@@ -67,38 +69,31 @@ def compare(file):
 			return "failed"
 	except:
 		return "failed"
-def printDict(list1,list2,list3):
+def printDict(list1,list2):
 	tab='<table border="1">'
-	tab=tab+'<tr><th>File</th><th>Result</th><th>Error</th><tr>'
+	tab=tab+'<tr><th>File</th><th>Result</th><tr>'
 	length=len(list1)
 	i=0
 	while i<length:
-		tab=tab+generate_tr(list1[i],list2[i],list3[i])
+		tab=tab+generate_tr(list1[i],list2[i])
 		i+=1
 	tab=tab+'</table>'
 	return tab
 #delete exist folder
-os.system("rm -rf ./tests/testsBackEnd/results")
-os.system("mkdir -p ./tests/testsBackEnd/results")
+os.system("make BackClean")
 list_in_tests = os.listdir("./tests/testsBackEnd/")
 listFile=[]
 listResult=[]
-listError=[]
 for name in sorted(list_in_tests):
 	if name[-2:] == '.c':
 		base=os.path.basename(name)
 		file=os.path.splitext(base)[0]
-		out_error_list1=execution1(file,name)
-		out_error_list2=execution2(file,name)
+		error1=execution1(file,name)
+		error2=execution2(file,name)
 		result=compare(file)
 		listFile.append(file)
 		listResult.append(result)
-		if(result=="failed"):
-			listError.append(out_error_list1+out_error_list2)
-		else:
-			listError.append("")
 	else:
 		pass
-tab=printDict(listFile,listResult,listError)
+tab=printDict(listFile,listResult)
 writeIn("./testBackEnd.html",tab)
-#subprocess.call(["xdg-open","./testBackEnd.html"])
