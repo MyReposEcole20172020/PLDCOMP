@@ -1,5 +1,4 @@
-#include<inttypes.h>
-void main(void){
+void main(){
   if(1<2)  {
       putchar('V');
     } 

@@ -20,10 +20,17 @@ def writeIn(filename,contents):
 	f.close()
 	pass
 def execution(filename,root):
-	os.system("make testsFrontEnd folderC="+str(root)+" file="+str(filename))
-	obj=subprocess.Popen(["gcc", "-w", str(root)+"/results/"+str(filename)+"/"+str(filename)+".o","-o",str(root)+"/results/"+str(filename)+"/"+str(filename)+".out"],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True)
-	out_error_list=obj.communicate()[0]
-	return out_error_list
+	folderO=str(root)+"/results/"+str(filename)
+	obj0=subprocess.Popen(["make", "FrontEnd","folderC="+str(root),"file="+str(filename),"folderO="+str(folderO),"folderOutput=null"],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,
+universal_newlines=True)
+	error0=obj0.communicate()[0]	
+	obj1=subprocess.Popen(["make","FrontEndAS","file="+str(filename),"folderO="+str(folderO)],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True)
+	fileO=str(root)+"/results/"+str(filename)+"/"+str(filename)+".o"
+	fileOut=str(root)+"/results/"+str(filename)+"/"+str(filename)+".out"
+	obj2=subprocess.Popen(["gcc", "-w", str(fileO),"-o",str(fileOut)],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True)
+	if not(str(error0)==""):	
+		print(error0)	
+	return error0
 listFile=[]
 listResult=[]
 listError=[]
@@ -32,15 +39,16 @@ for root,dirs,files in os.walk("./tests/testsFrontEnd",topdown=False):
 		if name[-2:] == '.c':
 			l=len(name)
 			file=name[0:l-2]
-			print(file)
-			out_error_list=execution(file,root)
+			error=execution(file,root)
 			listFile.append(file)
-			if(len(out_error_list)!=0):
+			if not (error==""):
+			
+			#if("err" in error.lower()):
 				listResult.append("failed")
+				listError.append(error)
 			else:
 				listResult.append("success")
-			listError.append(out_error_list)
-			#os.system("make testsFrontEndClean file="+str(file))
+				listError.append("")
 		else:
 			pass
 tab=printDict(listFile,listResult,listError)
