@@ -1,4 +1,3 @@
-#include<inttypes.h>
 void main(void){
 	char i;
 	i='A';

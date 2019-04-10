@@ -80,7 +80,7 @@ statement : ret
 	| forins
 	;
 
-ret : 'return' expr ';';
+ret : 'return' expr? ';';
 
 paramdec : TYPE VAR (',' TYPE VAR)*;
 

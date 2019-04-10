@@ -14,10 +14,10 @@ CFG::CFG(Function * func, Program* oneProg) {
 	nextFreeSymbolIndex = 0;
 	nextBBnumber = 1;
 	currentBlockDepth = 0;
-	map <string, Type> SymbolTypeMap;
-	SymbolType.push_back(SymbolTypeMap);
 	map <string, int> SymbolIndexMap;
 	SymbolIndex.push_back(SymbolIndexMap);
+	map <string, Type> SymbolTypeMap;
+	SymbolType.push_back(SymbolTypeMap);
 	add_to_symbol_table("retValue", *(ast->getReturnType()));
 }
 
@@ -111,6 +111,7 @@ void CFG::add_to_symbol_table(string name, Type t, int tableSize) {
 	if (SymbolIndex[currentBlockDepth].find(name) != SymbolIndex[currentBlockDepth].end()) {
 		cerr << "Error : Redeclaration of  \'" << name << "\'\n";
 		cerr << "The variable \'" << name << "\' will still remain at its old address \n";
+		exit(0);
 		return;
 	}
 	SymbolType[currentBlockDepth].insert(make_pair(name,t));
@@ -147,7 +148,7 @@ int CFG::get_var_index(string name) {
 		}
 	}
 	cerr << "Error : Variable \'" << name << "\' not found (Index)\n";
-	return(1);
+	exit(0);
 }
 
 Type CFG::get_var_type(string name) {

@@ -1,13 +1,9 @@
-int square (int a) {
-    return a*a;
+int square(int a) {
+	return a*a;
 }
-
-char main(int arg){
-	char tab[10];
-	int i ;
-	for(i = 0; i < 10; i++) {
-	    tab[i] = 'b';
-	    putchar('\n');
-	}
-	return tab[5] = '9';
+int main(){
+	int tab[10];
+	tab[1] = 5;
+	tab[2] = 6;
+	return tab[1]+tab[2];
 }

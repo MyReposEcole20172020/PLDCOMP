@@ -44,6 +44,23 @@ class CFG {
 		//The program node that this CFG belongs to
 		Program* prog;
 		
+		void add_currentBlockDepth(){
+			map <string, int> SymbolIndexMap;
+			SymbolIndex.push_back(SymbolIndexMap);
+			map <string, Type> SymbolTypeMap;
+			SymbolType.push_back(SymbolTypeMap);
+			currentBlockDepth++;
+		}
+		void sub_currentBlockDepth(){
+			SymbolType.pop_back();
+			SymbolIndex.pop_back();
+			currentBlockDepth--;
+		}
+		
+		int get_depth(){
+			return currentBlockDepth;
+		}
+		
  	protected:
 		vector<map <string, Type>> SymbolType; /**< part of the symbol table  */
 		int currentBlockDepth;

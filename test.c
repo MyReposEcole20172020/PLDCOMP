@@ -1,9 +1,11 @@
+int square(int a) {
+	return a*a;
+}
 int main(){
-	int a =0 ;
-    while(a < 10) {
-    	putchar('b');
-    	a++;
-    }
-    return a;
+	int tab[10];
+	tab[1] = 5;
+	tab[2] = 6;
+	int b = 3 * tab[1]/5;
+	return b-1;
 }
 
