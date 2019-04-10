@@ -25,6 +25,7 @@
 #include "ast-nodes/GetChar.h"
 #include "ast-nodes/ElemLv.h"
 #include "ast-nodes/ElemRv.h"
+#include "ast-nodes/DecFunc.h"
 
 using namespace std;
 
@@ -334,11 +335,28 @@ public:
     }
 
     antlrcpp::Any visitDeclarFuncNormal(MainParser::DeclarFuncNormalContext *context) override {
-        return visitChildren(context);
+		string name = context->VAR()->getText();
+		string type = context->TYPE()->getText();
+        ParamDec* decs = nullptr;
+        if(context->paramdec() != nullptr){
+                decs = visit(context->paramdec()).as<ParamDec*>();
+        }else{
+                cout << "Pas de parametres(Normal Dec)" << endl;
+        }
+        DecFunc* dec = new DecFunc(name,type,decs);
+        return (Function*)dec;
     }
 
     antlrcpp::Any visitDeclarFuncVoid(MainParser::DeclarFuncVoidContext *context) override {
-        return visitChildren(context);
+		string name = context->VAR()->getText();
+        ParamDec* decs = nullptr;
+        if(context->paramdec() != nullptr){
+                decs = visit(context->paramdec()).as<ParamDec*>();
+        }else{
+                cout << "Pas de parametres(Void Dec)" << endl;
+        }
+        DecFunc* dec = new DecFunc(name,"void",decs);
+        return (Function*)dec;
     }
 
     antlrcpp::Any visitPutchar(MainParser::PutcharContext *context) override{
