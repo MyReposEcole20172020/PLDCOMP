@@ -1,6 +1,5 @@
-#include <stdint.h>
 
 void main() {
-   int32_t a;
+   int a;
    a = 2 << 2;
 }

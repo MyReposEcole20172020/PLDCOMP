@@ -240,7 +240,6 @@ string ExprUnary::buildIR(CFG * cfg){
 
 string ExprAssign::buildIR(CFG * cfg){
     //Declaration
-    cout << "qsdqsdqsdqsd" << endl;
     string left = myVar->buildIR(cfg);
 	Type typeLeft = cfg->get_var_type(left);
 	this->setType(typeLeft);
@@ -248,7 +247,6 @@ string ExprAssign::buildIR(CFG * cfg){
     string right = myExpr->buildIR(cfg);
     //Get the address of the variable
     if(dynamic_cast<ElemLv*>(myVar) == nullptr) {
-    	cout << "qsdqsd" << endl;
         Type typeInt("int64_t");
         string var = cfg->create_new_tempvar(typeInt);
         int offset = cfg->get_var_index(left);

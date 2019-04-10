@@ -197,7 +197,6 @@ public:
     }
 
     antlrcpp::Any visitPostop(MainParser::PostopContext *context) override {
-		cout << "PostopIN" << endl;
         Expr* ex = nullptr;
 		Expr* var = new ExprVar(context->VAR()->getText());
 		if(context->children[1]->getText() == "++"){
@@ -205,7 +204,6 @@ public:
 		}else if(context->children[1]->getText() == "--"){
 			ex = new ExprUnary(OPTYPE::POSTDEC, var);
 		}
-		cout << "PostopOUT" << endl;
         return ex;
     }
 
@@ -280,9 +278,7 @@ public:
     }
     
     antlrcpp::Any visitDeclararray(MainParser::DeclararrayContext *context) override {
-        cout << "qsd"<< endl;
         string type = context->TYPE()->getText();
-        cout << "qsd"<< endl;
         Statement* declarArray = new DeclarArray(context->VAR()->getText(), type, context->INT()->getText());
         return declarArray;
     }
@@ -313,8 +309,6 @@ public:
         ParamDec* decs = nullptr;
         if(context->paramdec() != nullptr){
                 decs = visit(context->paramdec()).as<ParamDec*>();
-        }else{
-                cout << "Pas de parametres(Normal)" << endl;
         }
         DefFunc* def = new DefFunc(type,name,block,decs);
         return (Function*)def;
@@ -326,8 +320,6 @@ public:
         ParamDec* decs = nullptr;
         if(context->paramdec() != nullptr){
                 decs = visit(context->paramdec()).as<ParamDec*>();
-        }else{
-                cout << "Pas de parametres(Void)" << endl;
         }
         DefFunc* def = new DefFunc("void",name,block,decs);
         return (Function*)def;
@@ -428,8 +420,6 @@ public:
         for(size_t i = 0; i < length; i++){
                 Parameter* temp = new Parameter(lesVars.at(i)->getText(),lesTypes.at(i)->getText());
                 decs->addParameter(temp);
-                cout << lesTypes.at(i)->getText() << endl;
-                cout << lesVars.at(i)->getText() << endl;
         }
         return decs;
     }

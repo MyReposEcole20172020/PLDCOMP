@@ -17,7 +17,6 @@ For::~For()
 }
 
 string For::buildIR(CFG* cfg){
-    cout << "for build ir" << endl; 
 	init->buildIR(cfg);
 	BasicBlock* beforeWhileBB = cfg->current_bb;
 	BasicBlock* testBB = new BasicBlock(cfg, cfg->new_BB_name());

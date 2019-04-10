@@ -1,7 +1,6 @@
-#include <stdint.h>
 
 void main() {
-   int32_t a;
+   int a;
    a = 1;
    a = -a;
 }

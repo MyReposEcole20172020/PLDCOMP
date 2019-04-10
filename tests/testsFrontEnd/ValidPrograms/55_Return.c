@@ -1,11 +1,10 @@
-#include <stdint.h>
 
-int32_t function(int32_t a) {
+int function(int a) {
    return a+1;
 }
    
 void main() {
-   int32_t a;
+   int a;
    a = 1;
    a = function(a);
 }

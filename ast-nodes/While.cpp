@@ -15,7 +15,6 @@ While::~While()
 }
 
 string While::buildIR(CFG* cfg){
-    cout << "while build ir" << endl; 
 	BasicBlock* beforeWhileBB = cfg->current_bb;
 	BasicBlock* testBB = new BasicBlock(cfg, cfg->new_BB_name());
 	cfg->add_bb(testBB);

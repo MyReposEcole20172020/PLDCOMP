@@ -3,7 +3,6 @@ grammar Main;
 prog: (funct)*;
 
 funct : deffunc | declarfunc;
-
 	
 expr: execfunc		# exfunc
 	| elemrv		# elemarray
