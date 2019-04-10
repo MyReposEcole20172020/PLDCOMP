@@ -1,0 +1,116 @@
+digraph {
+	ordering=out;
+	ranksep=.4;
+	node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="lightgrey", style="filled, solid"];
+	edge [arrowsize=.5, color="black"]
+
+	node0x1a9a240[label="prog"];
+	node0x1aa3d50[label="funct"];
+	node0x1aa5ca0[label="deffunc"];
+	node0x1aa5c70[label="int"]
+	node0x1aa5d50[label="main"]
+	node0x1aa5d90[label="("]
+	node0x1aa5e20[label=")"]
+	node0x1aa5dc0[label="block"];
+	node0x1aa6350[label="{"]
+	node0x1aa6620[label="statement"];
+	node0x1aa81f0[label="defvar"];
+	node0x1aa9a60[label="int"]
+	node0x1aa9ac0[label="a"]
+	node0x1aa9fe0[label="="]
+	node0x1aa6820[label="expr"];
+	node0x1aaa020[label="0"]
+	node0x1aad5d0[label=";"]
+	node0x1aaf110[label="statement"];
+	node0x1aaf740[label="whileins"];
+	node0x1aad490[label="while"]
+	node0x1aaaeb0[label="("]
+	node0x1aaf4c0[label="expr"];
+	node0x1aaf420[label="expr"];
+	node0x1aaff50[label="a"]
+	node0x1aaf470[label="compare"];
+	node0x1ab0ff0[label="<"]
+	node0x1aaf330[label="expr"];
+	node0x1ab1030[label="10"]
+	node0x1aac480[label=")"]
+	node0x1ab2600[label="block"];
+	node0x1aaae70[label="{"]
+	node0x1ab4bb0[label="statement"];
+	node0x1ab4930[label="exprstat"];
+	node0x1ab20a0[label="expr"];
+	node0x1ab63b0[label="execfunc"];
+	node0x1ab6590[label="putchar"]
+	node0x1ab6e20[label="("]
+	node0x1ab6ec0[label="expr"];
+	node0x1ab7200[label="'b'"]
+	node0x1ab7240[label=")"]
+	node0x1ab7300[label=";"]
+	node0x1ab7410[label="statement"];
+	node0x1ab74c0[label="exprstat"];
+	node0x1ab7ef0[label="expr"];
+	node0x1aafcc0[label="a"]
+	node0x1ab83e0[label="++"]
+	node0x1aba5a0[label="}"]
+	node0x1aba620[label="statement"];
+	node0x1abab70[label="ret"];
+	node0x1abb410[label="return"]
+	node0x1abaad0[label="expr"];
+	node0x1abb650[label="a"]
+	node0x1abb690[label=";"]
+	node0x1abb8d0[label="}"]
+	node0x1a9a240 -> node0x1aa3d50;
+	node0x1aa3d50 -> node0x1aa5ca0;
+	node0x1aa5ca0 -> node0x1aa5c70;
+	node0x1aa5ca0 -> node0x1aa5d50;
+	node0x1aa5ca0 -> node0x1aa5d90;
+	node0x1aa5ca0 -> node0x1aa5e20;
+	node0x1aa5ca0 -> node0x1aa5dc0;
+	node0x1aa5dc0 -> node0x1aa6350;
+	node0x1aa5dc0 -> node0x1aa6620;
+	node0x1aa5dc0 -> node0x1aaf110;
+	node0x1aa5dc0 -> node0x1aba620;
+	node0x1aa5dc0 -> node0x1abb8d0;
+	node0x1aa6620 -> node0x1aa81f0;
+	node0x1aa81f0 -> node0x1aa9a60;
+	node0x1aa81f0 -> node0x1aa9ac0;
+	node0x1aa81f0 -> node0x1aa9fe0;
+	node0x1aa81f0 -> node0x1aa6820;
+	node0x1aa81f0 -> node0x1aad5d0;
+	node0x1aa6820 -> node0x1aaa020;
+	node0x1aaf110 -> node0x1aaf740;
+	node0x1aaf740 -> node0x1aad490;
+	node0x1aaf740 -> node0x1aaaeb0;
+	node0x1aaf740 -> node0x1aaf4c0;
+	node0x1aaf740 -> node0x1aac480;
+	node0x1aaf740 -> node0x1ab2600;
+	node0x1aaf4c0 -> node0x1aaf420;
+	node0x1aaf4c0 -> node0x1aaf470;
+	node0x1aaf4c0 -> node0x1aaf330;
+	node0x1aaf420 -> node0x1aaff50;
+	node0x1aaf470 -> node0x1ab0ff0;
+	node0x1aaf330 -> node0x1ab1030;
+	node0x1ab2600 -> node0x1aaae70;
+	node0x1ab2600 -> node0x1ab4bb0;
+	node0x1ab2600 -> node0x1ab7410;
+	node0x1ab2600 -> node0x1aba5a0;
+	node0x1ab4bb0 -> node0x1ab4930;
+	node0x1ab4930 -> node0x1ab20a0;
+	node0x1ab4930 -> node0x1ab7300;
+	node0x1ab20a0 -> node0x1ab63b0;
+	node0x1ab63b0 -> node0x1ab6590;
+	node0x1ab63b0 -> node0x1ab6e20;
+	node0x1ab63b0 -> node0x1ab6ec0;
+	node0x1ab63b0 -> node0x1ab7240;
+	node0x1ab6ec0 -> node0x1ab7200;
+	node0x1ab7410 -> node0x1ab74c0;
+	node0x1ab74c0 -> node0x1ab7ef0;
+	node0x1ab74c0 -> node0x1aba688;
+	node0x1ab7ef0 -> node0x1aafcc0;
+	node0x1ab7ef0 -> node0x1ab83e0;
+	node0x1aba620 -> node0x1abab70;
+	node0x1abab70 -> node0x1abb410;
+	node0x1abab70 -> node0x1abaad0;
+	node0x1abab70 -> node0x1abb690;
+	node0x1abaad0 -> node0x1abb650;
+}

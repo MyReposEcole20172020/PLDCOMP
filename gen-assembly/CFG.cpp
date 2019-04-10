@@ -13,6 +13,11 @@ CFG::CFG(Function * func, Program* oneProg) {
 	prog = oneProg;
 	nextFreeSymbolIndex = 0;
 	nextBBnumber = 1;
+	currentBlockDepth = 0;
+	map <string, Type> SymbolTypeMap;
+	SymbolType.push_back(SymbolTypeMap);
+	map <string, int> SymbolIndexMap;
+	SymbolIndex.push_back(SymbolIndexMap);
 	add_to_symbol_table("retValue", *(ast->getReturnType()));
 }
 
@@ -48,11 +53,15 @@ void CFG::gen_asm(ostream& o) {
 }
 
 string CFG::IR_reg_to_asm(string reg) {
-	auto index = SymbolIndex.find(reg);
-	if (index == SymbolIndex.end()) {
-		return("Erreur");
+	vector<map<string, int>>::reverse_iterator rit;
+	for(rit = SymbolIndex.rbegin(); rit != SymbolIndex.rend(); rit++){
+    	map<string, int>::iterator index = rit->find(reg);
+		if (index != rit->end()) {
+			return("-"+ to_string(index->second) + "(%rbp)");
+		}
 	}
-	return("-"+ to_string(index->second) + "(%rbp)");
+	cerr << "Error : Variable \'" << reg << "\' was not declared \n";
+	return("Erreur");
 }
 
 void CFG::gen_asm_prologue(ostream& o) {
@@ -99,7 +108,12 @@ void CFG::gen_asm_epilogue(ostream& o) {
 
 // symbol table methods
 void CFG::add_to_symbol_table(string name, Type t, int tableSize) {
-	SymbolType.insert(make_pair(name,t));
+	if (SymbolIndex[currentBlockDepth].find(name) != SymbolIndex[currentBlockDepth].end()) {
+		cerr << "Error : Redeclaration of  \'" << name << "\'\n";
+		cerr << "The variable \'" << name << "\' will still remain at its old address \n";
+		return;
+	}
+	SymbolType[currentBlockDepth].insert(make_pair(name,t));
 	if(t.getText() == "int64_t" || t.getText() == "int*"  || t.getText() == "char*"){
 		nextFreeSymbolIndex +=8;
 	}else if(t.getText() == "int"){
@@ -107,7 +121,7 @@ void CFG::add_to_symbol_table(string name, Type t, int tableSize) {
 	}else if(t.getText() == "char"){
 		nextFreeSymbolIndex +=4;
 	}
-	SymbolIndex.insert(make_pair(name,nextFreeSymbolIndex));
+	SymbolIndex[currentBlockDepth].insert(make_pair(name,nextFreeSymbolIndex));
 	nextFreeSymbolIndex += tableSize;		
 }
 
@@ -125,17 +139,24 @@ string CFG::create_new_tempvar(Type t) {
 }
 
 int CFG::get_var_index(string name) {
-	auto index = SymbolIndex.find(name);
-	if (index == SymbolIndex.end()) {
-		return(1);
+	vector<map<string, int>>::reverse_iterator rit;
+	for(rit = SymbolIndex.rbegin(); rit != SymbolIndex.rend(); rit++){
+    	auto index = rit->find(name);
+		if (index != rit->end()) {
+			return(-1*index->second);
+		}
 	}
-	return(-1*index->second);
+	cerr << "Error : Variable \'" << name << "\' not found (Index)\n";
+	return(1);
 }
 
 Type CFG::get_var_type(string name) {
-	auto t = SymbolType.find(name);
-	if (t == SymbolType.end()) {
-		return(Type("unknown"));
+	vector<map <string, Type>>::reverse_iterator rit;
+	for(rit = SymbolType.rbegin(); rit != SymbolType.rend(); rit++){
+    	auto t = rit->find(name);
+		if (t != rit->end()) {
+			return(t->second);
+		}
 	}
-	return(t->second);
+	return(Type("unknown"));
 }

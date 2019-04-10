@@ -141,7 +141,6 @@ string ExprBinary::buildIR(CFG * cfg){
             cfg->current_bb->add_IRInstr(IRInstr::cmp_le,this->getType(),params);
             break;
 		case LESSEQ:
-		    cout << "dqsdq" << endl;
 			params.push_back(var3);
             params.push_back(var1);
             params.push_back(var2);

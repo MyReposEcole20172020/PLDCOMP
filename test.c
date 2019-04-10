@@ -1,5 +1,9 @@
-int64_t main(){
-    int64_t a = 10+'b';
+int main(){
+	int a =0 ;
+    while(a < 10) {
+    	putchar('b');
+    	a++
+    }
     return a;
 }
 

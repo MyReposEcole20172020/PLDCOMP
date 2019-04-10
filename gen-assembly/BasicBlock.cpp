@@ -34,13 +34,26 @@ void BasicBlock::gen_asm(ostream &o) {
         jne     .LBB0_2*/
 		string lastAssigned = instrs.back()->getDestination();
 		int offset = get_cfg()->get_var_index(lastAssigned);
+		Type t = get_cfg()->get_var_type(lastAssigned);
 		if(instrs.back()->getOp() == IRInstr::wmem){
 			o << "	movq	" << offset << "(%rbp)," << " %rax\n";
-			o << "	cmpq   $0, " << "(%rax) \n";
+			if(t.getText() == "int") {
+				o << "	cmpl   $0, " << "(%rax) \n";
+			}else if (t.getText() == "int64_t") {
+				o << "	cmpq   $0, " << "(%rax) \n";
+			}else if (t.getText() == "char") {
+				o << "	cmpb   $0, " << "(%rax) \n";
+			}
 			o << "	je  ";
 			o << exit_false->get_label() <<" \n";
 		}else{
-			o << "	cmpq   $0, " << offset << "(%rbp) \n";
+			if(t.getText() == "int") {
+				o << "	cmpl   $0, " << offset << "(%rbp) \n";
+			}else if (t.getText() == "int64_t") {
+				o << "	cmpq   $0, " << offset << "(%rbp) \n";
+			}else if (t.getText() == "char") {
+				o << "	cmpb   $0, " << offset << "(%rbp) \n";
+			}
 			o << "	je  ";
 			o << exit_false->get_label() <<" \n";
 		}

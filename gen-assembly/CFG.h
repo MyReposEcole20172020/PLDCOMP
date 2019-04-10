@@ -10,6 +10,7 @@
  */
 #include "BasicBlock.h"
 #include <map>
+#include <vector>
 
 using namespace std;
 class Function; 
@@ -44,8 +45,9 @@ class CFG {
 		Program* prog;
 		
  	protected:
-		map <string, Type> SymbolType; /**< part of the symbol table  */
-		map <string, int> SymbolIndex; /**< part of the symbol table  */
+		vector<map <string, Type>> SymbolType; /**< part of the symbol table  */
+		int currentBlockDepth;
+		vector<map <string, int>> SymbolIndex; /**< part of the symbol table  */
 		int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
 		int nextBBnumber; /**< just for naming */
 		
