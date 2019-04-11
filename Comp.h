@@ -64,10 +64,7 @@ public:
 	Expr* exp = nullptr;
 	if(context->TYPE() != nullptr){
 	    string type = context->TYPE()->getText();
-	    exp = new ExprSizeOf(type,"");
-	}else if(context->VAR() != nullptr){
-	    string var = context->VAR()->getText();
-	    exp = new ExprSizeOf("",var);
+	    exp = new ExprSizeOf(type);
 	}
         return exp;
     }

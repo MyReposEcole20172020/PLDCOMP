@@ -6,7 +6,7 @@ funct : deffunc | declarfunc;
 	
 expr: execfunc		# exfunc
 	| elemrv		# elemarray
-	| 'sizeof' '(' (TYPE|VAR) ')' # sizeof
+	| 'sizeof' '(' TYPE ')' # sizeof
 	| VAR ('++'|'--')	# postop
 	| ('++'|'--') VAR	# preop 
 	| expr ('*'|'/'|'%') expr # multdivmod
