@@ -1,0 +1,307 @@
+0-main.c
+int main(){
+	int x = 3;
+	int y = 4;
+	int z = x/y;
+	return z;
+}
+output:
+
+return:
+0
+
+
+0-test.c
+int main(int arg){
+	return 1*+2;
+}
+Syntax Error
+
+
+10-Tableau.c
+int square (int a) {
+    return a*a;
+}
+
+int main(int arg){
+	int tab[10];
+	int i ;
+	for(i = 0; i < 10; i++) {
+	    tab[i] = i;
+	    putchar('\n');
+	}
+	tab[1] = 5;
+	tab[2] = 6;
+	return tab[1]+tab[2];
+}
+output:
+
+return:
+139
+
+
+1_decls.c
+void main() {
+  int x;
+  int y;
+  int z;
+}
+
+output:
+
+return:
+37
+
+
+1_empty.c
+void main() {
+}
+output:
+
+return:
+37
+
+
+2_putchar.c
+void main() {
+  putchar('O');
+  putchar('K');
+  putchar(' ');
+}
+output:
+OK 
+return:
+32
+
+
+3_variables.c
+void main() {
+  char a, b, c;
+  a='O';
+  b=a;
+  c='K';
+  a='\n';
+  putchar(b);
+  putchar(c);
+  putchar(a);
+}
+output:
+OK
+
+return:
+10
+
+
+4-VarConstAddCall.c
+void main(){
+  char a;
+  char b;
+  char c;
+  a='M';
+  b=1+a+1;
+  c=b+1;
+  putchar(b);
+  putchar(c);
+  putchar('\n');
+}
+output:
+OP
+
+return:
+10
+
+
+5-If.c
+int square (int a) {
+    return a*a;
+}
+
+int main(int arg){
+	int x = sizeof(int);
+	int z = sizeof(int);
+	int y = 5;
+	z |= y;
+	int a = 0; 
+	if(square(5)){
+		putchar('a');
+	}else if(3 > 4){
+		putchar('b');
+	}else if(3 > 2){
+		if(a > 6)
+			for(x = 0; x < 3; x++)
+			putchar('s');
+	}else{
+		putchar('c');
+	}
+    return z;
+}
+
+
+
+5-If-return.c
+int main(){
+	int x;
+	x = 2;
+	if ( x < 1 ) {
+		return x;
+	}else{
+		return 5;
+	}
+	int i = 3;
+	for(i = 0; i < 3; i++){
+		putchar('a');
+	}
+    return x;
+}
+output:
+
+return:
+5
+
+
+5-IfThenElse.c
+void main(){
+  if(1<2)  {
+      putchar('V');
+    } 
+  else   {
+      putchar('F');
+    } 
+  putchar('\n');
+}
+output:
+V
+
+return:
+10
+
+
+5-If-while-2.c
+int main(){
+	int i=0;
+	if(i<10){
+		while (i<5){
+			putchar('x');
+			i++;
+		}
+	}
+	return i;
+}
+output:
+xxxxx
+return:
+5
+
+
+5-If-while.c
+int main(){
+	int i=0;
+	int j=10;
+	while (i<=10){
+		if(i<5){
+			putchar('x');
+		}
+		i++;
+	}
+	return i;
+}
+output:
+xxxxx
+return:
+11
+
+
+6-While.c
+void main(){
+  int i;
+  i=0;
+  
+  while(i<5)  {
+      putchar('V');
+      i=i+1;
+    } 
+  putchar('\n');
+}
+output:
+VVVVV
+
+return:
+10
+
+
+7-For.c
+int main(){
+	int i,j,k;
+	for(i=0;i<3;i++){
+		putchar('i');
+	}
+	for(j=3;j>0;j--){
+		putchar('j');
+	}
+	for(k=3;k>0;k=k-1){
+		putchar('k');
+	}
+
+	putchar('a');
+	return i;
+}
+output:
+iiijjjkkka
+return:
+3
+
+
+7-testWhileAndVariables.c
+void main(void){
+	char i;
+	i='A';
+	
+	while(i<'Z'+1)	{
+			putchar(i);
+			i=i+1;
+		} 
+	putchar('\n');
+}
+Syntax Error
+
+
+8-Fonction.c
+int square(int x){
+	return x*x;
+}
+int main(){
+	int x=10;
+	int s=square(x);
+	return s;
+}
+output:
+
+return:
+100
+
+
+9-Expression.c
+int main(int arg){
+	int x,y;
+	x=2+3;
+	y = x-1;
+	y++;
+	--y;
+	y+=x;
+	y-=x;
+	y*=x;
+	y/=x;
+	y = y + x;
+	y = 2 * (x + 3);
+	x = x * y;
+	char a='a';
+	putchar(a);
+	return x/15;
+}
+output:
+a
+return:
+5
+
+
+fini!
