@@ -12,6 +12,13 @@
 #include <map>
 #include <vector>
 
+struct Scope{
+	Scope* parent; 
+	int myIndex;
+	map <string, int> SymbolIndex;
+	map <string, Type> SymbolType;
+};
+
 using namespace std;
 class Function; 
 class Program;
@@ -36,6 +43,10 @@ class CFG {
 		string create_new_tempvar(Type t);
 		int get_var_index(string name);
 		Type get_var_type(string name);
+
+		int get_var_index_asm(string name, int scopeIndex);
+		Type get_var_type_asm(string name, int scopeIndex);
+
         int getNextFreeSymbolIndex() { return nextFreeSymbolIndex; }
 		// basic block management
 		string new_BB_name();
@@ -45,26 +56,42 @@ class CFG {
 		Program* prog;
 		
 		void add_currentBlockDepth(){
-			map <string, int> SymbolIndexMap;
+			/*map <string, int> SymbolIndexMap;
 			SymbolIndex.push_back(SymbolIndexMap);
 			map <string, Type> SymbolTypeMap;
-			SymbolType.push_back(SymbolTypeMap);
+			SymbolType.push_back(SymbolTypeMap);*/
+			currentScopeIndex++;
+			Scope* newScope = new Scope;
+			newScope->myIndex = currentScopeIndex;
+			newScope->parent = scopeIR.back();
+			scopeIR.push_back(newScope);
 			currentBlockDepth++;
+			
 		}
 		void sub_currentBlockDepth(){
-			SymbolType.pop_back();
-			SymbolIndex.pop_back();
+			/*SymbolType.pop_back();
+			SymbolIndex.pop_back();*/
+			allScope.push_back(scopeIR.back());
+			scopeIR.pop_back();
 			currentBlockDepth--;
 		}
 		
-		int get_depth(){
-			return currentBlockDepth;
+		int get_index(){
+			Scope* temp = scopeIR.back();
+			return temp->myIndex;
 		}
 		
+		int find_var_index(Scope* scope, string name);
+		Type find_var_type(Scope* scope, string name);
+		
  	protected:
-		vector<map <string, Type>> SymbolType; /**< part of the symbol table  */
+		//vector<map <string, Type>> SymbolType; /**< part of the symbol table  */
+		vector<Scope*> allScope;
+		int currentScopeIndex;
+		vector<Scope*> scopeIR;
 		int currentBlockDepth;
-		vector<map <string, int>> SymbolIndex; /**< part of the symbol table  */
+		
+		//vector<map <string, int>> SymbolIndex; /**< part of the symbol table  */
 		int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
 		int nextBBnumber; /**< just for naming */
 		

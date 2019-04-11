@@ -31,7 +31,6 @@ string ExprBinary::buildIR(CFG * cfg){
     string var1 = op1->buildIR(cfg);
     string var2 = op2->buildIR(cfg);
 	evalType();
-	//cout << this->getType().getText() << endl;
 	if(cfg->get_var_type(var1).getText() != type.getText()){
 		string var = cfg->create_new_tempvar(this->getType());
 		
@@ -56,7 +55,6 @@ string ExprBinary::buildIR(CFG * cfg){
         params.push_back(var1);
         cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(var1),params);
 		var1 = var;
-		//cout << "sdqsdqs" << endl;
 	}
 	if(cfg->get_var_type(var2).getText() != type.getText()){
 		string var = cfg->create_new_tempvar(this->getType());
@@ -1256,7 +1254,6 @@ string ExprOuBinAssign::buildIR(CFG * cfg){
 string ExprSizeOf::buildIR(CFG * cfg){
     Type typeInt("int");
     string var = cfg->create_new_tempvar(typeInt);
-    if(evType != ""){
 	int size;
 	if(evType == "int"){
 	    size = 4;
@@ -1269,8 +1266,5 @@ string ExprSizeOf::buildIR(CFG * cfg){
 	params.push_back(var);
 	params.push_back(to_string(size));
 	cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params);
-    }else{
-	string varName = myVar->buildIR(cfg);
-    }
     return var;
 }

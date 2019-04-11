@@ -24,6 +24,12 @@ If::~If()
 string If::buildIR(CFG* cfg){
     if(myElseIfs.size() == 0){
 	string var = myCondition->buildIR(cfg);
+	if(dynamic_cast<ExprVar*>(myCondition) != nullptr) {
+		vector<string> params3;
+        params3.push_back(var);
+        params3.push_back(var);
+        cfg->current_bb->add_IRInstr(IRInstr::copy,myCondition->getType(),params3);
+	}
 	BasicBlock* testBB = cfg->current_bb;
 	BasicBlock* thenBB = new BasicBlock(cfg, cfg->new_BB_name());
 	cfg->add_bb(thenBB);
@@ -54,8 +60,14 @@ string If::buildIR(CFG* cfg){
 	myBlock->buildIR(cfg);
 	cfg->current_bb = afterIfBB;
     }else{
-	cout << "In" << endl;
 	string var = myCondition->buildIR(cfg);
+	if(dynamic_cast<ExprVar*>(myCondition) != nullptr) {
+		vector<string> params3;
+        params3.push_back(var);
+        params3.push_back(var);
+        cfg->current_bb->add_IRInstr(IRInstr::copy,myCondition->getType(),params3);
+		cout << "in" << endl;
+	}
 	BasicBlock* testBB = cfg->current_bb;
 	BasicBlock* thenBB = new BasicBlock(cfg, cfg->new_BB_name());
 	cfg->add_bb(thenBB);
@@ -120,7 +132,6 @@ string If::buildIR(CFG* cfg){
 		cfg->current_bb = elseBlockBB.at(i);
 		block->buildIR(cfg);
 	}
-	cout << "End" << endl;
 	cfg->current_bb = afterIfBB;
 	cout << cfg->current_bb << endl;
     }

@@ -9,11 +9,11 @@ Block::~Block() {
 }
 
 string Block::buildIR(CFG* cfg){
-	//cfg->add_currentBlockDepth();	
+    cfg->add_currentBlockDepth();	
     for(Statement* stat : stats){
         stat->buildIR(cfg);
     }
-    //cfg->sub_currentBlockDepth();	
+    cfg->sub_currentBlockDepth();	
     return "";
 }
 

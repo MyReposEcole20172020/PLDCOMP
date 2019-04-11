@@ -18,6 +18,7 @@ class Program{
 	    /*Creates the correspondant IR instruction of this node in CFG*/
         string buildIR();
         void generateCode(ofstream& o);
+	void verifierRedefinition();
 	    Type* getFuncReturn(string name);
             
     protected:

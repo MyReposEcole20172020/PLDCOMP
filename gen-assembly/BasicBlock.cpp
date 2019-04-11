@@ -33,8 +33,9 @@ void BasicBlock::gen_asm(ostream &o) {
 	    /*cmpl    $0, -4(%rbp)
         jne     .LBB0_2*/
 		string lastAssigned = instrs.back()->getDestination();
-		int offset = get_cfg()->get_var_index(lastAssigned);
-		Type t = get_cfg()->get_var_type(lastAssigned);
+		//int offset = get_cfg()->get_var_index(lastAssigned);
+		int offset = get_cfg()->get_var_index_asm(lastAssigned,instrs.back()->getScopeIndex());
+		Type t = instrs.back()->getType();
 		if(instrs.back()->getOp() == IRInstr::wmem){
 			o << "	movq	" << offset << "(%rbp)," << " %rax\n";
 			if(t.getText() == "int") {

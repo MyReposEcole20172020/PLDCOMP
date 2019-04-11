@@ -8,7 +8,7 @@ using namespace std;
 
 class For : public Statement {
     public:
-        For(Statement* oneInit, Expr* oneExpr, Block* oneBlock, Statement* afterFor) : init(oneInit), myCondition(oneExpr), myBlock(oneBlock){myBlock->addStatement(afterFor);}
+        For(Statement* oneInit, Expr* oneExpr, Block* oneBlock, Statement* afterFor) : init(oneInit), myCondition(oneExpr), myBlock(oneBlock), after(afterFor){}//myBlock->addStatement(afterFor);
 		For(Statement* oneInit, Expr* oneExpr, Statement* oneStatement, Statement* afterFor);
         virtual ~For();
 
@@ -18,4 +18,5 @@ class For : public Statement {
 		Statement* init;
         Expr* myCondition;
 		Block * myBlock;
+		Statement* after;
 };

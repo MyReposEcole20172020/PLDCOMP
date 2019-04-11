@@ -223,11 +223,10 @@ class ExprOuBinAssign : public Expr {
 
 class ExprSizeOf : public Expr {
     public:
-		ExprSizeOf(string oneType, string varName ) {type = Type("unknown"); myVar = new ExprVar(varName); evType = oneType;}
-		virtual ~ExprSizeOf(){delete myVar;}
+		ExprSizeOf(string oneType) {type = Type("int"); evType = oneType;}
+		virtual ~ExprSizeOf(){}
 		void evalType() {}
 		string buildIR(CFG * cfg);
 	protected:
-		ExprVar* myVar;
 		string evType; 
 };

@@ -12,6 +12,20 @@ Program::~Program() {
     funcs.clear();
 }
 
+void Program::verifierRedefinition(){
+    int size = funcs.size();
+    for(int i = 0; i < size; i++){
+	for(int j = 0; j < size;j++){
+		if(i != j){
+			if(funcs[i]->getName() == funcs[j]->getName()){
+				cerr << "Error : Redefinition of function :" << funcs[i]->getName() << endl;
+				exit(0); 
+			}
+		}
+	}
+    }
+}
+
 string Program::buildIR(){
     for(Function* func : funcs){
         CFG* cfg = new CFG(func,this);
@@ -22,6 +36,7 @@ string Program::buildIR(){
 }
 
 void Program::generateCode(ofstream& o){
+	verifierRedefinition();
 	o << ".text " << endl;
 	for(CFG* cfg : cfgs){
 	    //cout << cfg->ast->getName() << endl;
