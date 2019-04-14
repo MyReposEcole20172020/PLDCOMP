@@ -20,10 +20,6 @@ Exécutez-vous la commande suivante:
 
 make
 
-(S'il existe des erreurs de persmission sur l'exécutable antlr,
-Faites chmod +x ./antlr pour ajouter le droit d'exécution)
-
-
 Pour compiler votre programme souhaité (XXXX.c),
 
 Lancez la ligne de commande ci-dessous:
@@ -35,13 +31,19 @@ Et puis, lancez l'exécutable pour visualiser le résultat:
 ./XXXX.exe
 
 echo $? (Instruction pour afficher la valeur de retour)
+
+Note:
+S'il existe des problèmes sur la permission de ./myCompilator, vous pouvez utiliser le commande ci dessous pour le générer:
+
+g++ ./handleProg/myCompilator.cpp -o ./myCompilator
+
 /***********************************************************************************************/
 
 Pour lancer les tests, on propose une autre solution:
 
 1.D’abord ouvrir le terminal dans le dossier principal
 
-2.Et puis taper “make” pour creer l’executable Main.exe
+2.Et puis taper “make” pour creer l’exécutable Main.exe
 
 3.Ensuit taper “make test” et suivre l’instruction écrite dans le console:
 	
@@ -50,3 +52,8 @@ Pour lancer les tests, on propose une autre solution:
 	taper 3 pour quitter
 
 4.Après avoir quitté le menu, on peut chercher les exécutables dans le même répertoire que les fichiers c, Et on exécute les exécutables comme par exemple “./test.exe” et puis fait un “echo $?” pour afficher la valeur de retour.
+
+Note2:
+Le test le plus complexe est le fichier scope.c dans le dossier "tests"
+Les chemins utilisés pour antlr4 dans le makefile doivent être imperativement ceux des machines du département
+
