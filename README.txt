@@ -24,17 +24,15 @@ make
 Faites chmod +x ./antlr pour ajouter le droit d'exécution)
 
 
-Pour compiler votre programme souhaité,
+Pour compiler votre programme souhaité (XXXX.c),
 
-Copiez-le dans le fichier test.c,
+Lancez la ligne de commande ci-dessous:
 
-Puis lancez la ligne de commande ci-dessous:
-
-./myCompilator test.c
+./myCompilator XXXX.c
 
 Et puis, lancez l'exécutable pour visualiser le résultat:
 
-./test.exe
+./XXXX.exe
 
 echo $? (Instruction pour afficher la valeur de retour)
 /***********************************************************************************************/
