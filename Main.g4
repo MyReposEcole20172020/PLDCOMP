@@ -99,7 +99,7 @@ CHAR : '\'\\'CHARESC '\''
 CHARESC : [abefnrtv'"?\\];
 STR : '"' FILENAME '"';
 LIB : '<' FILENAME '>';
-FILENAME : [a-zA-Z0-9]+('.'[a-zA-Z0-9]+)*;
+FILENAME : [a-zA-Z0-9]+('.'[a-zA-Z0-9]+)+;
 WS : [\t\r\n ] -> skip;
 
 
