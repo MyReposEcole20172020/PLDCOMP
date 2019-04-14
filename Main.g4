@@ -1,15 +1,15 @@
 grammar Main;
 
-prog: direct* funct*;
+prog: direct* (funct)*;
+
+funct : deffunc | declarfunc;
 
 direct : '#' include;
 include : 'include' (STR | LIB);
-
-funct : deffunc | declarfunc;
 	
 expr: execfunc		# exfunc
 	| elemrv		# elemarray
-	| 'sizeof' '(' (TYPE|VAR) ')' # sizeof
+	| 'sizeof' '(' TYPE ')' # sizeof
 	| VAR ('++'|'--')	# postop
 	| ('++'|'--') VAR	# preop 
 	| expr ('*'|'/'|'%') expr # multdivmod
@@ -21,7 +21,6 @@ expr: execfunc		# exfunc
 	| expr '&' expr         # etBin
 	| expr '^' expr         # ouExBin
 	| expr '|' expr         # ouBin
-	| expr ('&&'|'||') expr	# exprBin
 	| expr compare expr 	# cmp
 	| (VAR|elemlv) ('*='|'/='|'+='|'-='|'%='|'&='|'^='|'|='|'=') expr # Assignement
 	;
@@ -64,7 +63,6 @@ declarfunc : TYPE VAR '(' paramdec? ')' ';' #declarFuncNormal
 	;  
 
 execfunc : 'putchar' '(' expr ')' #putchar
-	| 'printf' '(' STR (',' VAR)* ')' #printf 
 	| 'getchar' '(' ')' #getchar
 	| VAR '(' param? ')' #normalExec
 	;
@@ -99,8 +97,10 @@ VAR : [a-zA-Z][a-zA-Z0-9]*;
 CHAR : '\'\\'CHARESC '\''
 	| '\'' ~['\\\r\n\t] '\'';
 CHARESC : [abefnrtv'"?\\];
-STR : '"' (~[%]|'%d'|'%c')* '"';
-LIB : '<' (~[%]|'%d'|'%c')* '>';
+FILENAME : [a-zA-Z0-9]+('.'[a-zA-Z0-9]+)*;
+PATH : (VAR '/')* FILENAME;
+STR : '"' (FILENAME|PATH) '"';
+LIB : '<' (FILENAME|PATH) '>';
 WS : [\t\r\n ] -> skip;
 
 

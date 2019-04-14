@@ -42,6 +42,12 @@ public:
             Function* func = (Function*)visit(funcs[i]);
             prog->addFunction(func);
         }
+	vector<MainParser::DirectContext *> directs = context->direct();
+        size_t length2 = directs.size();
+        for(size_t j = 0; j < length2; j++){
+            Include* inc = (Include*)visit(directs[j]);
+            prog->addInclude(inc);
+        }
         return prog;
     }
 
@@ -56,6 +62,22 @@ public:
         return func;
     }
 
+    antlrcpp::Any visitDirect(MainParser::DirectContext *context) override {
+       	Include* inc = (Include*)visit(context->include());
+        return inc;
+    }
+
+    antlrcpp::Any visitInclude(MainParser::IncludeContext *context) override {
+        string direct;
+	if(context->STR() != nullptr){
+		direct = context->STR()->getText();
+	}else if(context->LIB() != nullptr){
+		direct = context->LIB()->getText();
+	}
+	Include* inc = new Include(direct);
+        return inc;
+    }
+
     antlrcpp::Any visitPar(MainParser::ParContext *context) override {
         return (Expr*)visit(context->expr());
     }
@@ -64,10 +86,7 @@ public:
 	Expr* exp = nullptr;
 	if(context->TYPE() != nullptr){
 	    string type = context->TYPE()->getText();
-	    exp = new ExprSizeOf(type,"");
-	}else if(context->VAR() != nullptr){
-	    string var = context->VAR()->getText();
-	    exp = new ExprSizeOf("",var);
+	    exp = new ExprSizeOf(type);
 	}
         return exp;
     }
@@ -332,8 +351,6 @@ public:
         ParamDec* decs = nullptr;
         if(context->paramdec() != nullptr){
                 decs = visit(context->paramdec()).as<ParamDec*>();
-        }else{
-                cout << "Pas de parametres(Normal Dec)" << endl;
         }
         DecFunc* dec = new DecFunc(name,type,decs);
         return (Function*)dec;
@@ -344,8 +361,6 @@ public:
         ParamDec* decs = nullptr;
         if(context->paramdec() != nullptr){
                 decs = visit(context->paramdec()).as<ParamDec*>();
-        }else{
-                cout << "Pas de parametres(Void Dec)" << endl;
         }
         DecFunc* dec = new DecFunc(name,"void",decs);
         return (Function*)dec;
