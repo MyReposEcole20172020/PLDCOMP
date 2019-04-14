@@ -6,13 +6,17 @@
 		filename=$(echo $1|cut -c9-$length)
 		cat "./tests/$filename.c"
 		rm -rf $filepath/$filename.o $filepath/$filename.s $filepath/$filename.out
-		make --no-print-directory back file=./tests/$filename.c path=./tests
+		make --no-print-directory back file=./$filename path=./tests
 		output2=$($filepath"/a.out")
 		return2=$(echo $?)
+		echo "\noutput comp:"$output2
+		echo "return value comp:"$return2"\n"
 		cd $filepath
-		gcc -w $filename.c -o ./a.out
+		gcc $filename.c -o ./a.out
 		output1=$(./a.out)
 		return1=$(echo $?)
+		echo "\noutput gcc:"$output1
+		echo "return value gcc:"$return1"\n"
 		if [ "$output1" = "$output2" ] && [ "$return1" = "$return2" ] ;then
 			return 1	
 		else
@@ -33,7 +37,6 @@
 	do 
 		nbTotal=$((nbTotal+1))
 		filename=$(echo $i|cut -c3-)
-		echo $filename
 		filename=$(echo "./"$filename)
 		unitaire $filename
 		result="$?"
@@ -45,6 +48,8 @@
 			echo "KO"
 		fi
 		echo ""
+		cd ~
+		cd $shell_folder
 	done
 	cd ~
 	cd $shell_folder/tests

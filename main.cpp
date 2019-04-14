@@ -15,7 +15,6 @@ using namespace std;
 /*Main file which lauchs the compilation*/
 
 void testUnit(const char ** argv){
-	//Main.exe test.c 
 	ifstream is (argv[1]);
 	if (!is){
 		cout << "erreur ouverture fichier" << endl;
@@ -56,25 +55,44 @@ void testWithoutParameter(){
 	cout<<"Welcome to discovery our compilator!"<<endl;
 	cout<<"1.All the tests"<<endl;
 	cout<<"2.One test"<<endl;
+	cout<<"3.Quit"<<endl;
 	int choice;
-	cout<<"Please choose 1 or 2: "<<endl;
+	cout<<"Please choose 1 or 2 or 3: "<<endl;
 	cin>>choice;
-	while (1==1){
+	int flag=1;
+	while (choice!=3 || flag!=0 ){
 		if(choice==1){
 			system("sh test.sh");
-			break;
+			cout<<"1.All the tests"<<endl;
+			cout<<"2.One test"<<endl;
+			cout<<"3.Quit"<<endl;
+			cout<<"Please choose 1 or 2 or 3: "<<endl;
+			cin>>choice;
 		}
 		else if(choice==2){
 			cout<<"Please enter the file to compile with relative path:"<<endl;
 			string cmd;
 			string filename;
 			cin>>filename;
-			cmd="make testUnit fileC="+filename;
+			cout<<endl;
+			cmd="make --no-print-directory testUnit fileC="+filename;
 			system(cmd.c_str());
-			break;
+			cout<<"1.All the tests"<<endl;
+			cout<<"2.One test"<<endl;
+			cout<<"3.Quit"<<endl;
+			cout<<"Please choose 1 or 2 or 3: "<<endl;
+			cin>>choice;
+		}
+		else if (choice==3){
+			cout<<"Thank you for enjoying our game of tests, goodbye!"<<endl;
+			flag=0;
 		}
 		else{
-			printf("Please retry to choose 1 or 2: ");
+			cout<<"Please retry to choose!"<<endl;
+			cout<<"1.All the tests"<<endl;
+			cout<<"2.One test"<<endl;
+			cout<<"3.Quit"<<endl;
+			cout<<"Please choose 1 or 2 or 3: "<<endl;
 			cin>>choice;
 		}	
 	}
