@@ -2,10 +2,11 @@ grammar Main;
 
 prog: direct* (funct)*;
 
-funct : deffunc | declarfunc;
-
 direct : '#' include;
 include : 'include' (STR | LIB);
+
+funct : deffunc | declarfunc;
+
 	
 expr: execfunc		# exfunc
 	| elemrv		# elemarray
