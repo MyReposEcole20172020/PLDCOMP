@@ -16,12 +16,12 @@ expr: execfunc		# exfunc
 	| expr ('+'|'-') expr # addsub
 	| INT			# const
 	| VAR			# var
-	|  CHAR 		# char
+	| CHAR 		# char
 	| '(' expr ')'  	# par
+	| expr compare expr 	# cmp
 	| expr '&' expr         # etBin
 	| expr '^' expr         # ouExBin
 	| expr '|' expr         # ouBin
-	| expr compare expr 	# cmp
 	| (VAR|elemlv) ('*='|'/='|'+='|'-='|'%='|'&='|'^='|'|='|'=') expr # Assignement
 	;
 
@@ -97,10 +97,9 @@ VAR : [a-zA-Z][a-zA-Z0-9]*;
 CHAR : '\'\\'CHARESC '\''
 	| '\'' ~['\\\r\n\t] '\'';
 CHARESC : [abefnrtv'"?\\];
+STR : '"' FILENAME '"';
+LIB : '<' FILENAME '>';
 FILENAME : [a-zA-Z0-9]+('.'[a-zA-Z0-9]+)*;
-PATH : (VAR '/')* FILENAME;
-STR : '"' (FILENAME|PATH) '"';
-LIB : '<' (FILENAME|PATH) '>';
 WS : [\t\r\n ] -> skip;
 
 
