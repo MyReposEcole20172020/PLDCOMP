@@ -1,5 +1,5 @@
-ANTLR=/shares/public/tp/antlr/bin/antlr4
-ANTLRRUNTIME=/shares/public/tp/ANTLR4-CPP
+ANTLR=./antlr4
+ANTLRRUNTIME=./ANTLR4-CPP
 compilateur=./Main.exe
 grammaire=./Main.g4
 back=./tests/testsBackEnd
@@ -8,6 +8,7 @@ frontValid=./tests/testsFrontEnd/ValidPrograms
 default:
 	$(ANTLR) -visitor -no-listener -Dlanguage=Cpp  $(grammaire)
 	clang++ -DTRACE -g -std=c++11  -I $(ANTLRRUNTIME)/antlr4-runtime/ *.cpp ./gen-assembly/*.cpp ./ast-nodes/*.cpp  -o $(compilateur) $(ANTLRRUNTIME)/lib/libantlr4-runtime.a
+	g++ ./handleProg/myCompilator.cpp -o myCompilator
 clean:
 	rm -rf MainBaseVisitor.* MainLexer.* MainParser.* MainVisitor.* *.dot *.pdf *.interp *.tokens *.exe *.s *.o *.out
 
