@@ -1,6 +1,9 @@
 grammar Main;
 
-prog: (funct)*;
+prog: direct* funct*;
+
+direct : '#' include;
+include : 'include' (STR | LIB);
 
 funct : deffunc | declarfunc;
 	
@@ -97,6 +100,7 @@ CHAR : '\'\\'CHARESC '\''
 	| '\'' ~['\\\r\n\t] '\'';
 CHARESC : [abefnrtv'"?\\];
 STR : '"' (~[%]|'%d'|'%c')* '"';
+LIB : '<' (~[%]|'%d'|'%c')* '>';
 WS : [\t\r\n ] -> skip;
 
 
