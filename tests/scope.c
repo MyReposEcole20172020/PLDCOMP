@@ -5,6 +5,14 @@ int square (int a) {
     return a*a;
 }
 
+int fact(int x){
+	if(x != 1){
+		return x*fact(x-1);
+	}else{
+		return 1;
+	}
+}
+
 int main(int arg){
 	int x = sizeof(int);
 	int z = sizeof(int);
@@ -34,5 +42,5 @@ int main(int arg){
 	}else{
 		putchar('c');
 	}
-    return x+a;
+    return x+a+fact(4);
 }
