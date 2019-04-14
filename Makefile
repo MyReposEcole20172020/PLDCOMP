@@ -1,5 +1,5 @@
-ANTLR=./antlr4
-ANTLRRUNTIME=./ANTLR4-CPP
+ANTLR=/shares/public/tp/antlr/bin/antlr4
+ANTLRRUNTIME=/shares/public/tp/ANTLR4-CPP
 compilateur=./Main.exe
 grammaire=./Main.g4
 back=./tests/testsBackEnd
