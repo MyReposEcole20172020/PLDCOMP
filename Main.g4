@@ -18,10 +18,10 @@ expr: execfunc		# exfunc
 	| VAR			# var
 	|  CHAR 		# char
 	| '(' expr ')'  	# par
+	| expr compare expr 	# cmp
 	| expr '&' expr         # etBin
 	| expr '^' expr         # ouExBin
 	| expr '|' expr         # ouBin
-	| expr compare expr 	# cmp
 	| (VAR|elemlv) ('*='|'/='|'+='|'-='|'%='|'&='|'^='|'|='|'=') expr # Assignement
 	;
 

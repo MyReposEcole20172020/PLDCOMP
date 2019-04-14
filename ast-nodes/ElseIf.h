@@ -9,11 +9,11 @@ using namespace std;
 class ElseIf {
     public:
         ElseIf(Expr* oneExpr, Block* oneBlock) : myCondition(oneExpr), myBlock(oneBlock){}
-	ElseIf(Expr* oneExpr, Statement* oneStatement);
+		ElseIf(Expr* oneExpr, Statement* oneStatement);
         virtual ~ElseIf();
-	Expr* getMyCondition(){return myCondition;}
-	Block* getMyBlock(){return myBlock;}
+		Expr* getMyCondition(){return myCondition;}
+		Block* getMyBlock(){return myBlock;}
     protected:
         Expr* myCondition;
-	Block * myBlock;
+		Block * myBlock;
 };

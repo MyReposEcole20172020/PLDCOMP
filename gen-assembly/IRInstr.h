@@ -72,7 +72,7 @@ class LdconstInstr : public IRInstr {
 
 class CopyInstr : public IRInstr {
 	public:
-		CopyInstr(BasicBlock* bb_, Type t, string destination, string source) : IRInstr(bb_, ldconst, t, destination), s(source) {}
+		CopyInstr(BasicBlock* bb_, Type t, string destination, string source) : IRInstr(bb_, copy, t, destination), s(source) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private: 
@@ -91,7 +91,7 @@ class AddInstr : public IRInstr {
 
 class SubInstr : public IRInstr {
 	public:
-		SubInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
+		SubInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, sub, t, destination), x(operand1), y(operand2) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
@@ -101,7 +101,7 @@ class SubInstr : public IRInstr {
 
 class MulInstr : public IRInstr {
 	public:
-		MulInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
+		MulInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, mul, t, destination), x(operand1), y(operand2) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
@@ -111,7 +111,7 @@ class MulInstr : public IRInstr {
 
 class DivInstr : public IRInstr {
 	public:
-		DivInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
+		DivInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, div, t, destination), x(operand1), y(operand2) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
@@ -121,7 +121,7 @@ class DivInstr : public IRInstr {
 
 class ModInstr : public IRInstr {
 	public:
-		ModInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
+		ModInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, mod, t, destination), x(operand1), y(operand2) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
@@ -131,7 +131,7 @@ class ModInstr : public IRInstr {
 
 class AndBinInstr : public IRInstr {
 	public:
-		AndBinInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
+		AndBinInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, and_bin, t, destination), x(operand1), y(operand2) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
@@ -141,7 +141,7 @@ class AndBinInstr : public IRInstr {
 
 class OuExBinInstr : public IRInstr {
 	public:
-		OuExBinInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
+		OuExBinInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, ou_ex_bin, t, destination), x(operand1), y(operand2) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
@@ -151,7 +151,7 @@ class OuExBinInstr : public IRInstr {
 
 class OuBinInstr : public IRInstr {
 	public:
-		OuBinInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
+		OuBinInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, ou_bin, t, destination), x(operand1), y(operand2) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
