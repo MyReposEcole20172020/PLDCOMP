@@ -31,7 +31,13 @@ string While::buildIR(CFG* cfg){
 	bodyBB->set_exit_true(testBB);
 	bodyBB->set_exit_false(nullptr);
 	cfg->current_bb = testBB;
-	myCondition->buildIR(cfg);
+	string var = myCondition->buildIR(cfg);
+	if(dynamic_cast<ExprVar*>(myCondition) != nullptr) {
+		vector<string> params3;
+        params3.push_back(var);
+        params3.push_back(var);
+        cfg->current_bb->add_IRInstr(IRInstr::copy,myCondition->getType(),params3);
+	}
 	cfg->current_bb = bodyBB;
 	myBlock->buildIR(cfg);
 	cfg->current_bb = afterWhileBB;

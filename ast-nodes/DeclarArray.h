@@ -5,7 +5,7 @@
 #include "Statement.h"
 using namespace std;
 
-/*Node which represents a declaration of variables*/
+/*Node which represents a declaration of an array*/
 
 class DeclarArray : public Statement{
    public:

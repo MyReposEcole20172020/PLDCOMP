@@ -3,6 +3,8 @@
 #include "../ast-nodes/Function.h"
 #include "CFG.h"
 
+IRInstr::IRInstr(BasicBlock* bb_, Operation op, Type t, string destination): bb(bb_), op(op), t(t), dest(destination){scopeIndex = bb->get_cfg()->get_index();}
+
 void RetInstr::gen_asm(ostream &o) {
 	/*Type retType = bb->get_cfg()->get_var_type("retValue");
 	if(retType.getText()!= "void"){
@@ -21,7 +23,8 @@ void RetInstr::gen_asm(ostream &o) {
 }
 
 void LdconstInstr::gen_asm(ostream &o) {
-	int offset = bb->get_cfg()->get_var_index(dest);
+	//int offset = bb->get_cfg()->get_var_index(dest);
+	int offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 	if(t.getText() == "int"){
 		o << "	movl  ";
 		o << "$" << c;
@@ -38,26 +41,24 @@ void LdconstInstr::gen_asm(ostream &o) {
 }
 
 void CopyInstr::gen_asm(ostream &o) {
-	int offsetD = bb->get_cfg()->get_var_index(dest);
-	int offsetS = bb->get_cfg()->get_var_index(s);
+	//int offsetD = bb->get_cfg()->get_var_index(dest);
+	int offsetD = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
+	//int offsetS = bb->get_cfg()->get_var_index(s);
+	int offsetS = bb->get_cfg()->get_var_index_asm(s,scopeIndex);
 	if(t.getText() == "int"){
-		o << "\n";
 		o << "	movl  ";
 		o << offsetS <<"(%rbp)";
     	o << "," << "%eax\n";
 		o << "	movl  ";
 		o << "%eax";
     	o << "," << offsetD <<"(%rbp)\n";
-		o << "\n";
 	}else if(t.getText() == "int64_t"){
-		o << "\n";
 		o << "	movq  ";
 		o << offsetS <<"(%rbp)";
     	o << "," << "%rax\n";
 		o << "	movq  ";
 		o << "%rax";
     	o << "," << offsetD <<"(%rbp)\n";
-		o << "\n";
 	}else if(t.getText() == "char"){
 		o << "	movb  ";
 		o << offsetS <<"(%rbp)";
@@ -82,7 +83,8 @@ void AddInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "char"){
 			o << "	movb  ";
 		}
-		offset = bb->get_cfg()->get_var_index(x);
+		//offset = bb->get_cfg()->get_var_index(x);
+		offset = bb->get_cfg()->get_var_index_asm(x,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -105,7 +107,8 @@ void AddInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "char"){
 			o << "	addb  ";
 		}
-		offset = bb->get_cfg()->get_var_index(y);
+		//offset = bb->get_cfg()->get_var_index(y);
+		offset = bb->get_cfg()->get_var_index_asm(y,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -131,7 +134,8 @@ void AddInstr::gen_asm(ostream &o) {
 			o << "	movb  ";
 			o << "%dl, ";
 		}
-		offset = bb->get_cfg()->get_var_index(dest);
+		//offset = bb->get_cfg()->get_var_index(dest);
+		offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 		o << offset << "(%rbp)\n";
 	}
 }
@@ -150,7 +154,8 @@ void SubInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "char"){
 			o << "	movb  ";
 		}
-		offset = bb->get_cfg()->get_var_index(x);
+		//offset = bb->get_cfg()->get_var_index(x);
+		offset = bb->get_cfg()->get_var_index_asm(x,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -173,7 +178,8 @@ void SubInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "char"){
 			o << "	subb  ";
 		}
-		offset = bb->get_cfg()->get_var_index(y);
+		//offset = bb->get_cfg()->get_var_index(y);
+		offset = bb->get_cfg()->get_var_index_asm(y,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -199,7 +205,8 @@ void SubInstr::gen_asm(ostream &o) {
 			o << "	movb  ";
 			o << "%dl, ";
 		}
-		offset = bb->get_cfg()->get_var_index(dest);
+		//offset = bb->get_cfg()->get_var_index(dest);
+		offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 		o << offset << "(%rbp)\n";
 	}
 }
@@ -216,7 +223,8 @@ void MulInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "int64_t"){
 			o << "	movq  ";
 		}
-		offset = bb->get_cfg()->get_var_index(x);
+		//offset = bb->get_cfg()->get_var_index(x);
+		offset = bb->get_cfg()->get_var_index_asm(x,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -234,7 +242,8 @@ void MulInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "int64_t"){
 			o << "	mulq  ";
 		}
-		offset = bb->get_cfg()->get_var_index(y);
+		//offset = bb->get_cfg()->get_var_index(y);
+		offset = bb->get_cfg()->get_var_index_asm(y,scopeIndex);
 		o << offset << "(%rbp)\n";
 	}
 	
@@ -250,7 +259,8 @@ void MulInstr::gen_asm(ostream &o) {
 			o << "	movq  ";
 			o << "%rax, ";
 		}
-		offset = bb->get_cfg()->get_var_index(dest);
+		//offset = bb->get_cfg()->get_var_index(dest);
+		offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 		o << offset << "(%rbp)\n";
 	}
 }
@@ -268,7 +278,8 @@ void DivInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "int64_t"){
 			o << "	movq  ";
 		}
-		offset = bb->get_cfg()->get_var_index(x);
+		//offset = bb->get_cfg()->get_var_index(x);
+		offset = bb->get_cfg()->get_var_index_asm(x,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -289,7 +300,8 @@ void DivInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "int64_t"){
 			o << "	divq  ";
 		}
-		offset = bb->get_cfg()->get_var_index(y);
+		//offset = bb->get_cfg()->get_var_index(y);
+		offset = bb->get_cfg()->get_var_index_asm(y,scopeIndex);
 		o << offset << "(%rbp)\n";
 	}
 	
@@ -305,7 +317,8 @@ void DivInstr::gen_asm(ostream &o) {
 			o << "	movq  ";
 			o << "%rax, ";
 		}
-		offset = bb->get_cfg()->get_var_index(dest);
+		//offset = bb->get_cfg()->get_var_index(dest);
+		offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 		o << offset << "(%rbp)\n";
 	}
 }
@@ -323,7 +336,8 @@ void ModInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "int64_t"){
 			o << "	movq  ";
 		}
-		offset = bb->get_cfg()->get_var_index(x);
+		//offset = bb->get_cfg()->get_var_index(x);
+		offset = bb->get_cfg()->get_var_index_asm(x,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -344,7 +358,8 @@ void ModInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "int64_t"){
 			o << "	divq  ";
 		}
-		offset = bb->get_cfg()->get_var_index(y);
+		//offset = bb->get_cfg()->get_var_index(y);
+		offset = bb->get_cfg()->get_var_index_asm(y,scopeIndex);
 		o << offset << "(%rbp)";
 	}
 	o <<"\n";
@@ -362,7 +377,8 @@ void ModInstr::gen_asm(ostream &o) {
 			o << "	movq  ";
 			o << "%rdx, ";
 		}
-		offset = bb->get_cfg()->get_var_index(dest);
+		//offset = bb->get_cfg()->get_var_index(dest);
+		offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 		o << offset << "(%rbp)\n";
 	}
 }
@@ -379,7 +395,8 @@ void AndBinInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "int64_t"){
 			o << "	movq  ";
 		}
-		offset = bb->get_cfg()->get_var_index(x);
+		//offset = bb->get_cfg()->get_var_index(x);
+		offset = bb->get_cfg()->get_var_index_asm(x,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -398,7 +415,8 @@ void AndBinInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "int64_t"){
 			o << "	andq  ";
 		}
-		offset = bb->get_cfg()->get_var_index(y);
+		//offset = bb->get_cfg()->get_var_index(y);
+		offset = bb->get_cfg()->get_var_index_asm(y,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -419,7 +437,8 @@ void AndBinInstr::gen_asm(ostream &o) {
 			o << "	movq  ";
 			o << "%rax, ";
 		}
-		offset = bb->get_cfg()->get_var_index(dest);
+		//offset = bb->get_cfg()->get_var_index(dest);
+		offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 		o << offset << "(%rbp)\n";
 	}
 }
@@ -436,7 +455,8 @@ void OuExBinInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "int64_t"){
 			o << "	movq  ";
 		}
-		offset = bb->get_cfg()->get_var_index(x);
+		//offset = bb->get_cfg()->get_var_index(x);
+		offset = bb->get_cfg()->get_var_index_asm(x,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -455,7 +475,8 @@ void OuExBinInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "int64_t"){
 			o << "	xorq  ";
 		}
-		offset = bb->get_cfg()->get_var_index(y);
+		//offset = bb->get_cfg()->get_var_index(y);
+		offset = bb->get_cfg()->get_var_index_asm(y,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -476,7 +497,8 @@ void OuExBinInstr::gen_asm(ostream &o) {
 			o << "	movq  ";
 			o << "%rax, ";
 		}
-		offset = bb->get_cfg()->get_var_index(dest);
+		//offset = bb->get_cfg()->get_var_index(dest);
+		offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 		o << offset << "(%rbp)\n";
 	}
 }
@@ -493,7 +515,8 @@ void OuBinInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "int64_t"){
 			o << "	movq  ";
 		}
-		offset = bb->get_cfg()->get_var_index(x);
+		//offset = bb->get_cfg()->get_var_index(x);
+		offset = bb->get_cfg()->get_var_index_asm(x,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -511,7 +534,8 @@ void OuBinInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "int64_t"){
 			o << "	orq  ";
 		}
-		offset = bb->get_cfg()->get_var_index(y);
+		//offset = bb->get_cfg()->get_var_index(y);
+		offset = bb->get_cfg()->get_var_index_asm(y,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -532,7 +556,8 @@ void OuBinInstr::gen_asm(ostream &o) {
 			o << "	movq  ";
 			o << "%rax, ";
 		}
-		offset = bb->get_cfg()->get_var_index(dest);
+		//offset = bb->get_cfg()->get_var_index(dest);
+		offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 		o << offset << "(%rbp)\n";
 	}
 }
@@ -550,7 +575,8 @@ void CmpInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "int64_t"){
 			o << "	movq  ";
 		}
-		offset = bb->get_cfg()->get_var_index(x);
+		//offset = bb->get_cfg()->get_var_index(x);
+		offset = bb->get_cfg()->get_var_index_asm(x,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -570,7 +596,8 @@ void CmpInstr::gen_asm(ostream &o) {
 		}else if(t.getText() == "int64_t"){
 			o << "	cmpq  ";
 		}
-		offset = bb->get_cfg()->get_var_index(y);
+		//offset = bb->get_cfg()->get_var_index(y);
+		offset = bb->get_cfg()->get_var_index_asm(y,scopeIndex);
 		o << offset << "(%rbp)";
 		if(t.getText() == "int"){
 			o << ", %eax\n";
@@ -609,7 +636,8 @@ void CmpInstr::gen_asm(ostream &o) {
 			o << "	movq  ";
 			o << "$0, ";
 		}
-		offset = bb->get_cfg()->get_var_index(dest);
+		//offset = bb->get_cfg()->get_var_index(dest);
+		offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 		o << offset << "(%rbp)\n";
 	}
 	o << "	movb  ";
@@ -617,7 +645,8 @@ void CmpInstr::gen_asm(ostream &o) {
 	if(dest == "!bp"){
 		o << "%rbp\n";
 	}else{
-		offset = bb->get_cfg()->get_var_index(dest);
+		//offset = bb->get_cfg()->get_var_index(dest);
+		offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 		o << offset << "(%rbp)\n";
 	}
 }
@@ -628,17 +657,19 @@ void CallInstr::gen_asm(ostream &o) {
 	    cout << "Error";
 	}
     if(this->t.getText() == "char") {
-        o << "movq    $0, %rax\n";
+        o << "	movq    $0, %rax\n";
 	}
 	for(int i =0; i<params.size(); ++i) {
-	    offset = bb->get_cfg()->get_var_index(params[i]);
+	    //offset = bb->get_cfg()->get_var_index(params[i]);
+	    offset = bb->get_cfg()->get_var_index_asm(params[i],scopeIndex);
 	    o << "	movq    ";
 	    o << offset << "(%rbp), ";
 	    o << "%" << ParamRegister[i] << "\n";
 	}
 	o << "	call " << label << "@PLT" << "\n";
 	if(dest != ""){
-	    offset = bb->get_cfg()->get_var_index(dest);
+	    //offset = bb->get_cfg()->get_var_index(dest);
+	    offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 	    if(this->t.getText() == "char") {
 	        o << "	movb    ";
 	        o << "%al, ";
@@ -654,11 +685,13 @@ void CallInstr::gen_asm(ostream &o) {
 }
 
 void WmemInstr::gen_asm(ostream &o) {
-	int offset = bb->get_cfg()->get_var_index(dest);
+	//int offset = bb->get_cfg()->get_var_index(dest);
+	int offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 	if(t.getText() == "int"){
 		o << "	movq  ";
 		o << offset <<"(%rbp), %rax\n";	
-		offset = bb->get_cfg()->get_var_index(val);
+		//offset = bb->get_cfg()->get_var_index(val);
+		offset = bb->get_cfg()->get_var_index_asm(val,scopeIndex);
 		o << "	movl  ";
 		o << offset <<"(%rbp), %r10d\n";	
 		o << "	movl  ";
@@ -666,7 +699,8 @@ void WmemInstr::gen_asm(ostream &o) {
 	}else if(t.getText() == "int64_t"){
 		o << "	movq  ";
 		o << offset <<"(%rbp), %rax\n";	
-		offset = bb->get_cfg()->get_var_index(val);
+		//offset = bb->get_cfg()->get_var_index(val);
+		offset = bb->get_cfg()->get_var_index_asm(val,scopeIndex);
 		o << "	movq  ";
 		o << offset <<"(%rbp), %r10\n";	
 		o << "	movq  ";
@@ -674,7 +708,8 @@ void WmemInstr::gen_asm(ostream &o) {
 	}else if(t.getText() == "char"){
 		o << "	movq  ";
 		o << offset <<"(%rbp), %rax\n";	
-		offset = bb->get_cfg()->get_var_index(val);
+		//offset = bb->get_cfg()->get_var_index(val);
+		offset = bb->get_cfg()->get_var_index_asm(val,scopeIndex);
 		o << "	movb  ";
 		o << offset <<"(%rbp), %dl\n";	
 		o << "	movb  ";
@@ -685,30 +720,36 @@ void WmemInstr::gen_asm(ostream &o) {
 void RmemInstr::gen_asm(ostream &o) {
 	int offset = 0;
 	if(t.getText() == "int"){
-		offset = bb->get_cfg()->get_var_index(ad);
+		//offset = bb->get_cfg()->get_var_index(ad);
+		offset = bb->get_cfg()->get_var_index_asm(ad,scopeIndex);
 		o << "	movq  ";
 		o << offset <<"(%rbp) " <<", %rax\n";
 		o << "	movl  ";	
 		o << "(%rax), %r10d\n";	
-		offset = bb->get_cfg()->get_var_index(dest);
+		//offset = bb->get_cfg()->get_var_index(dest);
+		offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 		o << "	movl  ";
 		o << "%r10d, "<< offset <<"(%rbp)\n";	
 	}else if(t.getText() == "int64_t"){
-		offset = bb->get_cfg()->get_var_index(ad);
+		//offset = bb->get_cfg()->get_var_index(ad);
+		offset = bb->get_cfg()->get_var_index_asm(ad,scopeIndex);
 		o << "	movq  ";
 		o << offset <<"(%rbp) " <<", %rax\n";
 		o << "	movq  ";	
 		o << "(%rax), %r10\n";	
-		offset = bb->get_cfg()->get_var_index(dest);
+		//offset = bb->get_cfg()->get_var_index(dest);
+		offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 		o << "	movq  ";
 		o << "%r10, "<< offset <<"(%rbp)\n";	
 	}else if(t.getText() == "char"){
-		offset = bb->get_cfg()->get_var_index(ad);
+		//offset = bb->get_cfg()->get_var_index(ad);
+		offset = bb->get_cfg()->get_var_index_asm(ad,scopeIndex);
 		o << "	movq  ";
 		o << offset <<"(%rbp) " <<", %rax\n";
 		o << "	movb  ";	
 		o << "(%rax), %dl\n";	
-		offset = bb->get_cfg()->get_var_index(dest);
+		//offset = bb->get_cfg()->get_var_index(dest);
+		offset = bb->get_cfg()->get_var_index_asm(dest,scopeIndex);
 		o << "	movb  ";
 		o << "%dl, "<< offset <<"(%rbp)\n";	
 	}	

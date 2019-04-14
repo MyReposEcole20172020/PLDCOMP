@@ -10,9 +10,15 @@ string ElemLv::buildIR(CFG* cfg){
 	
 	Type typeInt("int64_t");
 	string var5 = cfg->create_new_tempvar(typeInt);
-	string varTemp = cfg->create_new_tempvar(typeInt);
-	int offset = cfg->get_var_index(var5);
-	vector<string> params5;
+	//string varTemp = cfg->create_new_tempvar(typeInt);
+	//Give 0 as the intial value of var5
+	vector<string> params10;
+	params10.push_back(var5);
+	params10.push_back("0");
+	cfg->current_bb->add_IRInstr(IRInstr::ldconst,typeInt,params10);
+	//Copy the value of index
+	//int offset = cfg->get_var_index(var5);
+	/*vector<string> params5;
 	params5.push_back(varTemp);
 	params5.push_back(to_string(offset));
 	vector<string> params6;
@@ -24,7 +30,11 @@ string ElemLv::buildIR(CFG* cfg){
 	vector<string> param7;
 	param7.push_back(varTemp);
 	param7.push_back(index);
-	cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(index),param7);
+	cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(index),param7);*/
+	vector<string> params5;
+	params5.push_back(var5);
+	params5.push_back(index);
+	cfg->current_bb->add_IRInstr(IRInstr::copy,cfg->get_var_type(index),params5);
 	index = var5;
 
 	string tabType = cfg->get_var_type(arrayName).getText();
@@ -32,6 +42,8 @@ string ElemLv::buildIR(CFG* cfg){
 	    type = Type("int");
 	}else if(tabType == "char*"){
 	    type = Type("char");
+	}else if(tabType == "int64_t*"){
+	    type = Type("int64_t");
 	} 
 	Type type64("int64_t");
 	string var = cfg->create_new_tempvar(type64);

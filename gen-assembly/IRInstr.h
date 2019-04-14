@@ -33,10 +33,13 @@ class IRInstr {
 	    } Operation;
 
 	    /**  constructor */
-	    IRInstr(BasicBlock* bb_, Operation op, Type t, string destination = "") : bb(bb_), op(op), t(t), dest(destination){}
+	    //IRInstr(BasicBlock* bb_, Operation op, Type t, string destination = "") : bb(bb_), op(op), t(t), dest(destination){scopeIndex = bb->get_cfg()->get_index();}
+	    IRInstr(BasicBlock* bb_, Operation op, Type t, string destination = "");
 	    virtual ~IRInstr() {}
 	    Operation getOp() { return op; }
 	    string getDestination() { return dest; }
+		Type getType(){return t;}
+	    int getScopeIndex(){return scopeIndex;}
 	    
 	    /** Actual code generation */
 	    virtual void gen_asm(ostream &o) =0; /**< x86 assembly code generation for this IR instruction */
@@ -46,6 +49,7 @@ class IRInstr {
 	    BasicBlock* bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
 	    Operation op;
 	    Type t;
+	    int scopeIndex;
 	    //vector<string> params; /**< For 3-op instrs: d, x, y; for ldconst: d, c;  For call: label, d, params;  for wmem and rmem: choose yourself */
 	    // if you subclass IRInstr, each IRInstr subclass has its parameters and the previous (very important) comment becomes useless: it would be a better design. 
 };

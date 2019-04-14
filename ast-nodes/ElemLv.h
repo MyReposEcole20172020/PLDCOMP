@@ -3,7 +3,7 @@
 #include "Expression.h"
 using namespace std;
 
-/*Node which represents a call of function*/
+/*Node which represents a lvalue of an element in array*/
 
 class ElemLv : public Expr{
 	public:

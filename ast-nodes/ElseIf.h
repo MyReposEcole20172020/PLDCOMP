@@ -4,6 +4,7 @@
 #include "Block.h"
 using namespace std;
 
+/*Node which represents a elseif in statement*/
 
 class ElseIf {
     public:

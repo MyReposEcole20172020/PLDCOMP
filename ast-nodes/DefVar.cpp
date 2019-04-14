@@ -19,7 +19,15 @@ string DefVarWithDeclar::buildIR(CFG * cfg){
 
 	if(cfg->get_var_type(right).getText() != type.getText()){
 		string var = cfg->create_new_tempvar(type);
-		Type typeInt("int64_t");
+		vector<string> paramsd;
+		paramsd.push_back(var);
+		paramsd.push_back("0");
+		cfg->current_bb->add_IRInstr(IRInstr::ldconst,type,paramsd);
+		vector<string> params7;
+		params7.push_back(var);
+		params7.push_back(right);
+		cfg->current_bb->add_IRInstr(IRInstr::copy,cfg->get_var_type(right),params7);
+		/*Type typeInt("int64_t");
         string varTemp = cfg->create_new_tempvar(typeInt);
         int offset = cfg->get_var_index(var);
         vector<string> params1;
@@ -34,7 +42,7 @@ string DefVarWithDeclar::buildIR(CFG * cfg){
 		vector<string> params;
         params.push_back(varTemp);
         params.push_back(right);
-        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(right),params);
+        cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(right),params);*/
 		right = var;
 	}
 

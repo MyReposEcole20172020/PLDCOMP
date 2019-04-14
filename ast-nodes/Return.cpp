@@ -9,7 +9,7 @@ string Return::buildIR(CFG * cfg){
 	Type returnType = cfg->get_var_type("retValue");
 	if(returnType.getText() == "void"){
 		if(expr != nullptr){
-			cerr << "Erreur dans le retour void" << endl;
+			cerr << "Error: return of an void function can not have an expression" << endl;
 		}else{
 			BasicBlock* beforeReturnBB = cfg->current_bb;
 			BasicBlock* afterReturnBB = new BasicBlock(cfg, cfg->new_BB_name());
@@ -38,12 +38,8 @@ string Return::buildIR(CFG * cfg){
 			vector<string> params3={left,value};
 			cfg->current_bb->add_IRInstr(IRInstr::wmem,expr->getType(),params3);
 			cfg->current_bb = afterReturnBB;
-			//vector<string> params4={};
-			//cfg->current_bb->add_IRInstr(IRInstr::ret,expr->getType(),params4);
 		}else{
-		    cerr << returnType.getText() << endl;
-		    cerr << expr->getType().getText() << endl;
-			cerr << "Erreur du type de retour ou sans expression" << endl;
+			cerr << "Error: The type of return's expression do not correspond the return type of this function" << endl;
 		}
 	}
     return "";

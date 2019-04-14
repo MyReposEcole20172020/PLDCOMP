@@ -6,8 +6,13 @@ ExecFuncNormal::~ExecFuncNormal(){
 }
 
 string ExecFuncNormal::buildIR(CFG* cfg){
+	string left;
+	if(cfg->prog->getFuncReturn(funcName) == nullptr){
+		cerr << "Error: there is no definition of function (" << funcName << ") before the call of this function" <<endl;
+		exit(0); 
+	}else{
 	type = *(cfg->prog->getFuncReturn(funcName));
-	string left = cfg->create_new_tempvar(type);
+	left = cfg->create_new_tempvar(type);
 	vector<string> funcParams;
 	if(myParams != nullptr){
 		funcParams = myParams->buildIR(cfg);
@@ -19,5 +24,6 @@ string ExecFuncNormal::buildIR(CFG* cfg){
 		params.push_back(s);
     }
     cfg->current_bb->add_IRInstr(IRInstr::call,type,params);
+	}
 	return left;
 }
